@@ -898,7 +898,13 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -920,11 +926,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 214a7f58-629f-4fef-bad1-70b230148545
+  cloudProjectId: 3494af48-8b77-461f-8779-c76e20301607
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: S-Maze 2025-12-03_15-02-28
-  organizationId: nick-jansen
+  projectName: S-Maze
+  organizationId: unity_um6dw_ieosjg9g
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
