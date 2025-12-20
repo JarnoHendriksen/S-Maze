@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - wall
+  - fake_wall
+  - fake_wall_parent
   layers:
   - Default
   - TransparentFX
@@ -44,3 +46,4 @@ TagManager:
     locked: 0
   m_RenderingLayers:
   - Default
+  - Transparent Walls

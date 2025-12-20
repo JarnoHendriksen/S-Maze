@@ -6,10 +6,13 @@ public class PlayerController : MonoBehaviour
     public Rigidbody2D rb;
     Vector2 moveDirection;
     Vector2 mousePosition;
+
+    public bool IsInWall { get; private set; }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        IsInWall = false;
     }
 
     // Update is called once per frame
@@ -24,5 +27,21 @@ public class PlayerController : MonoBehaviour
         Vector2 aimDirection = mousePosition - rb.position;
         float aimAngle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg - 90f;
         rb.rotation = aimAngle;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("fake_wall_parent") && !IsInWall)
+        {
+            IsInWall = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("fake_wall_parent") && IsInWall)
+        {
+            IsInWall = false;
+        }
     }
 }
