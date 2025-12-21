@@ -67,6 +67,13 @@ public class PlayerController : MonoBehaviour
         {
             IsInWall = true;
         }
+        else if (collision.CompareTag("item"))
+        {
+            ItemData idat = collision.gameObject.GetComponent<ItemData>();
+
+            PlayerInventory.instance.CollectItem(idat);
+            Destroy(collision.gameObject);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
