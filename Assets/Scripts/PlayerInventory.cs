@@ -61,6 +61,7 @@ public class PlayerInventory : MonoBehaviour
     }
 }
 
+[System.Serializable]
 public class InventoryItem
 {
     public ItemType type;

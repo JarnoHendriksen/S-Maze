@@ -4,18 +4,32 @@ using UnityEngine.Rendering.Universal;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEditor.SearchService;
 
 public class MazeBuilder : MonoBehaviour
 {
-    [SerializeField] GameObject wallCell, floorCell, doorCell, fakeWallCell, itemPlaceholder;
-    [SerializeField] Transform wallObjects, fakeWallObjects, floorObjects, itemObjects;
+    [Header("Maze Object Prefabs")]
+    [SerializeField] GameObject wallCell;
+    [SerializeField] GameObject floorCell;
+    [SerializeField] GameObject doorCell;
+    [SerializeField] GameObject fakeWallCell;
+    [SerializeField] GameObject itemPlaceholder;
+
+    [Header("Maze Object Containers")]
+    [SerializeField] Transform wallObjects;
+    [SerializeField] Transform fakeWallObjects;
+    [SerializeField] Transform floorObjects;
+    [SerializeField] Transform itemObjects;
+
+    [SerializeField] List<Quest> quests; 
+
+    [Header("")]
     [SerializeField] Transform player;
     [SerializeField] Texture2D mazeLayout;
 
     float cellSizeInUnits;
 
     PlayerController playerCtrl;
-    bool fakeCorridorsVisible = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,6 +38,26 @@ public class MazeBuilder : MonoBehaviour
         cellSizeInUnits = wallSprite.bounds.size.x;
 
         Img2Map();
+
+        List<Item> allRequiredItems = new();
+
+        foreach (var q in quests)
+        {
+            foreach (var id in q.requiredItemIds)
+            {
+                Item item = GameManager.instance.items.Find(x => x.id.Equals(id));
+                allRequiredItems.Add(item);
+            }
+        }
+
+        for (int i = 0; i < allRequiredItems.Count / 10 + 1; i++)
+        {
+            int idx = UnityEngine.Random.Range(0, GameManager.instance.items.Count);
+            allRequiredItems.Add(GameManager.instance.items[idx]);
+        }
+
+        PopulateItemPlaceholders(allRequiredItems);
+        RemoveUnusedPlaceholders();
 
         fakeWallObjects.GetComponent<CompositeCollider2D>().GenerateGeometry();
 
@@ -144,6 +178,40 @@ public class MazeBuilder : MonoBehaviour
         return true;
     }
 
+    void PopulateItemPlaceholders(List<Item> requiredItems)
+    {
+        List<ItemData> allPlaceholders = itemObjects.GetComponentsInChildren<ItemData>().ToList();
+        List<Item> itemsToDistribute = requiredItems;
+
+        while (itemsToDistribute.Count > 0)
+        {
+            int placeholderIdx = UnityEngine.Random.Range(0, allPlaceholders.Count);
+            int itemIdx = UnityEngine.Random.Range(0, itemsToDistribute.Count);
+
+            allPlaceholders[placeholderIdx].type = itemsToDistribute[itemIdx].type;
+            allPlaceholders[placeholderIdx].value = itemsToDistribute[itemIdx].value;
+
+            if (itemsToDistribute[itemIdx].sprite != null)
+                allPlaceholders[placeholderIdx].GetComponent<SpriteRenderer>().sprite = itemsToDistribute[itemIdx].sprite;
+
+            allPlaceholders.RemoveAt(placeholderIdx);
+            itemsToDistribute.RemoveAt(itemIdx);
+        }
+    }
+
+    void RemoveUnusedPlaceholders()
+    {
+        List<ItemData> allPlaceholders = itemObjects.GetComponentsInChildren<ItemData>().ToList();
+
+        foreach (var item in allPlaceholders)
+        {
+            if (item.type == ItemType.None)
+            {
+                Destroy(item.gameObject);
+            }
+        }
+    }
+
     public static (byte, byte, byte) ToRGB255(Color c)
     {
         byte r = (byte)(c.r * 255);
@@ -197,6 +265,7 @@ public class PixelData
     }
 }
 
+[System.Serializable]
 public class ColorConstraints
 {
     public IColorConstraint red;
@@ -260,4 +329,12 @@ public class ColorRange : IColorConstraint
     {
         return v >= min || v <= max;
     }
+}
+
+[System.Serializable]
+public class Quest
+{
+    public string name;
+    public string description;
+    public List<int> requiredItemIds;
 }
