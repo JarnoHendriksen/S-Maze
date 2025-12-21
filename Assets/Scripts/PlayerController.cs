@@ -1,11 +1,18 @@
+using System;
 using UnityEngine;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class PlayerController : MonoBehaviour
 {
+    public MazeBuilder mazeBuilder;
+
     public float moveSpeed = 5f;
     public Rigidbody2D rb;
     Vector2 moveDirection;
     Vector2 mousePosition;
+
+    bool isPlayerCloseToDoor = false;
+    public float proximityThreshold = 1.0f;
 
     public bool IsInWall { get; private set; }
 
@@ -27,6 +34,30 @@ public class PlayerController : MonoBehaviour
         Vector2 aimDirection = mousePosition - rb.position;
         float aimAngle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg - 90f;
         rb.rotation = aimAngle;
+
+        // Able to open doors when close enough
+        GameObject[] Doors = GameObject.FindGameObjectsWithTag("door");
+        GameObject theDoor = mazeBuilder.closestDoor(Doors, rb.position, proximityThreshold);
+
+        if (theDoor != null)
+        {
+            // Now it is safe to check the distance
+            float distance = Vector2.Distance(theDoor.transform.position, rb.position);
+
+            isPlayerCloseToDoor = true;
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                mazeBuilder.openDoor(theDoor);
+            }
+            
+        }
+        else
+        {
+            // No door was found within range
+            isPlayerCloseToDoor = false;
+        }
+            
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

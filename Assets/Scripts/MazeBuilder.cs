@@ -162,6 +162,27 @@ public class MazeBuilder : MonoBehaviour
     {
         return new Color(r / 255.0f, g / 255.0f, b / 255.0f);
     }
+
+    public void openDoor(GameObject door)
+    {
+        door.SetActive(false);
+    }
+
+    public GameObject closestDoor(GameObject[] Doors, Vector2 playerPosition, float threshold)
+    {
+        GameObject result = null;
+        float distance = Mathf.Infinity;
+        foreach (GameObject door in Doors)
+        {
+            distance = Vector3.Distance(door.transform.position, playerPosition);
+            if (distance < threshold)
+            {
+                threshold = distance;
+                result = door;
+            }
+        }
+        return result;
+    }
 }
 
 public class PixelData

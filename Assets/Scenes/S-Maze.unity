@@ -3272,6 +3272,10 @@ PrefabInstance:
       propertyPath: moveSpeed
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 5463366416107641841, guid: 1c3421b2a3cac9c40ace196ca2e76d90, type: 3}
+      propertyPath: mazeBuilder
+      value: 
+      objectReference: {fileID: 1572219199}
     - target: {fileID: 5719060008027858678, guid: 1c3421b2a3cac9c40ace196ca2e76d90, type: 3}
       propertyPath: m_Enabled
       value: 0

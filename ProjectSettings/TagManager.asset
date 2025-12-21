@@ -7,6 +7,7 @@ TagManager:
   - wall
   - fake_wall
   - fake_wall_parent
+  - door
   layers:
   - Default
   - TransparentFX
