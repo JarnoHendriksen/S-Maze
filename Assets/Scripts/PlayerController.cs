@@ -25,6 +25,21 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            GameManager.instance.GamePaused = !GameManager.instance.GamePaused;
+            UIHandler.instance.PauseBtnClick();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIHandler.instance.SettingsBtnClick();
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            UIHandler.instance.PuzzleCompleted();
+        }
+
+        if (GameManager.instance.GamePaused) return;
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
 
@@ -57,8 +72,7 @@ public class PlayerController : MonoBehaviour
         {
             // No door was found within range
             isPlayerCloseToDoor = false;
-        }
-            
+        }            
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

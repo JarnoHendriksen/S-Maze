@@ -8,6 +8,8 @@ using UnityEditor.SearchService;
 
 public class MazeBuilder : MonoBehaviour
 {
+    public static MazeBuilder instance;
+
     [Header("Maze Object Prefabs")]
     [SerializeField] GameObject wallCell;
     [SerializeField] GameObject floorCell;
@@ -21,15 +23,25 @@ public class MazeBuilder : MonoBehaviour
     [SerializeField] Transform floorObjects;
     [SerializeField] Transform itemObjects;
 
-    [SerializeField] List<Quest> quests; 
+    [SerializeField] List<Quest> quests;
 
     [Header("")]
     [SerializeField] Transform player;
     [SerializeField] Texture2D mazeLayout;
 
+    public int QuestCount { get; private set; }
+
     float cellSizeInUnits;
 
     PlayerController playerCtrl;
+
+    private void Awake()
+    {
+        if (instance == null) instance = this;
+        else Destroy(gameObject);
+
+        QuestCount = quests.Count;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
