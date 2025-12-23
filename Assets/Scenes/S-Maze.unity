@@ -1121,24 +1121,31 @@ MonoBehaviour:
   items:
   - id: 0
     type: 1
+    sprite: {fileID: 0}
     value: A
   - id: 1
     type: 1
+    sprite: {fileID: 0}
     value: B
   - id: 2
     type: 1
+    sprite: {fileID: 0}
     value: C
   - id: 3
     type: 1
+    sprite: {fileID: 0}
     value: D
   - id: 4
     type: 1
+    sprite: {fileID: 0}
     value: E
   - id: 5
     type: 1
+    sprite: {fileID: 0}
     value: F
   - id: 6
     type: 1
+    sprite: {fileID: 0}
     value: G
 --- !u!4 &568041780
 Transform:
@@ -2482,6 +2489,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4011341549464748880, guid: bcf1d3e428fef364a9b068d9c0e38149, type: 3}
   m_PrefabInstance: {fileID: 1769399955}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1500471093
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1500471094}
+  - component: {fileID: 1500471095}
+  m_Layer: 0
+  m_Name: DataCollector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1500471094
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500471093}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.995682, y: -0.97498995, z: 0.026003541}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1500471095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500471093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efd0152370388f446bf455ede5197ccc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isLoggingEnabled: 0
 --- !u!4 &1565216909 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4011341549464748880, guid: bcf1d3e428fef364a9b068d9c0e38149, type: 3}
@@ -3458,3 +3510,4 @@ SceneRoots:
   - {fileID: 1572219200}
   - {fileID: 870896469}
   - {fileID: 568041780}
+  - {fileID: 1500471094}
