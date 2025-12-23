@@ -66,6 +66,11 @@ public class MazeBuilder : MonoBehaviour
 
     private void Update()
     {
+        if (playerCtrl == null)
+        {
+            playerCtrl = player.GetComponent<PlayerController>();
+            return;
+        }
         if (playerCtrl.IsInWall)
         {
             for (int i = 0; i < fakeWallObjects.childCount; i++)
@@ -111,16 +116,25 @@ public class MazeBuilder : MonoBehaviour
                 }
 
                 PixelData pd = new PixelData(x, y, pixel);
-                ColorSet validDoorOrientations = new ColorSet(0x00, 0x19, 0x32, 0x4b);
+                ColorConstraints playerColor = new (new ExactColor(0xff), new ExactColor(0x00), new ExactColor(0x00)); // #ff0000
+                ColorSet validDoorOrientations = new (0x00, 0x19, 0x32, 0x4b);
+                ColorConstraints doorColor = new (new ExactColor(0xff), new ExactColor(0xff), validDoorOrientations); // #ffff00, #ffff19, #ffff32, #ffff4b
+                ColorConstraints objectColor = new (new ExactColor(0x00), new ExactColor(0x00), new ExactColor(0xff)); // #0000ff
+                ColorConstraints hiddenPathColor = new (new ExactColor(0x50), new ExactColor(0x50), new ExactColor(0x50)); // #505050
+                ColorConstraints roomColor = new ColorConstraints(new ExactColor(0xff), new ColorRange(0x00, 0x99), new ExactColor(0xff)); // #ff00ff - #ff99ff
+                ColorConstraints exitColor = new ColorConstraints(new ExactColor(0xbe), new ExactColor(0xee), new ExactColor(0xef)); // #beeeef
 
-                bool success;
-                success = ParsePlayer(pd, new ColorConstraints(new ExactColor(0xff), new ExactColor(0x00), new ExactColor(0x00)));
-                if (success) continue;
-                success = ParseDoor(pd, new ColorConstraints(new ExactColor(0xff), new ExactColor(0xff), validDoorOrientations));
-                if (success) continue;
-                success = ParseObject(pd, new ColorConstraints(new ExactColor(0x00), new ExactColor(0x00), new ExactColor(0xff)));
-                if (success) continue;
-                success = ParseHiddenPath(pd, new ColorConstraints(new ExactColor(0x50), new ExactColor(0x50), new ExactColor(0x50)));
+                bool success = false;
+
+                (Func<PixelData, ColorConstraints, bool> parser, ColorConstraints cc)[] parsers =
+                    { (ParsePlayer, playerColor), (ParseDoor, doorColor), (ParseObject, objectColor), (ParseHiddenPath, hiddenPathColor), (ParseRoom, roomColor), (ParseExit, exitColor) };
+                int funcIdx = 0;
+
+                while(!success && funcIdx < parsers.Length)
+                {
+                    success = parsers[funcIdx].parser.Invoke(pd, parsers[funcIdx].cc);
+                    funcIdx++;
+                }
             }
         }
     }
@@ -174,6 +188,26 @@ public class MazeBuilder : MonoBehaviour
 
         Transform fakeWall = CreateCell(pixel.position.x, pixel.position.y, fakeWallCell);
         fakeWall.SetParent(fakeWallObjects);
+
+        return true;
+    }
+
+    bool ParseRoom(PixelData pixel, ColorConstraints cc)
+    {
+        (byte r, byte g, byte b) = ToRGB255(pixel.color);
+        if (!cc.red.IsValid(r) || !cc.green.IsValid(g) || !cc.blue.IsValid(b)) return false;
+
+        // TODO: Select room from prefab list (randomly, or based on color encoding) and instantiate
+
+        return true;
+    }
+
+    bool ParseExit(PixelData pixel, ColorConstraints cc)
+    {
+        (byte r, byte g, byte b) = ToRGB255(pixel.color);
+        if (!cc.red.IsValid(r) || !cc.green.IsValid(g) || !cc.blue.IsValid(b)) return false;
+
+        // TODO: Instantiate empty object with trigger collider and "exit" tag
 
         return true;
     }
@@ -324,6 +358,12 @@ public class ColorRange : IColorConstraint
 {
     public byte min;
     public byte max;
+
+    public ColorRange(byte min, byte max)
+    {
+        this.min = min;
+        this.max = max;
+    }
 
     public override bool IsValid(byte v)
     {
