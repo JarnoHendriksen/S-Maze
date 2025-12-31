@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class MenuAnimationController : MonoBehaviour
 {
+    public static MenuAnimationController instance;
+
     [SerializeField] Transform note4, note8, note16;
     [SerializeField] int noteCount;
     [SerializeField] float minSpeed, maxSpeed;
@@ -14,9 +16,14 @@ public class MenuAnimationController : MonoBehaviour
 
     (Transform transform, float speed)[] notes;
 
+    public float speedMultiplier = 1.0f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        if (instance == null) instance = this;
+        else Destroy(gameObject);
+
         notes = new (Transform, float)[noteCount];
     }
 
@@ -71,7 +78,7 @@ public class MenuAnimationController : MonoBehaviour
             {
                 n.transform.position = new Vector3(-offset, n.transform.position.y);
             }
-            n.transform.position += new Vector3(n.speed, 0, 0) * Time.deltaTime;
+            n.transform.position += speedMultiplier * Time.deltaTime * new Vector3(n.speed, 0, 0);
         }
     }
 

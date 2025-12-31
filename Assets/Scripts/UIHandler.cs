@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIHandler : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class UIHandler : MonoBehaviour
     [Header("Fixed UI elements")]
     [SerializeField] TextMeshProUGUI levelHeader;
     [SerializeField] Transform progressContainer;
+    [SerializeField] Transform blackScreen;
 
     [Header("Dynamic UI symbols")]
     [SerializeField] Transform puzzlePending;
@@ -30,6 +32,8 @@ public class UIHandler : MonoBehaviour
     bool isPanelMoving = false;
     bool isPausePanelOpen = false;
     bool isSettingsOpen = false;
+    bool isBlackScreenVisible = true;
+    bool isTransitioning = false;
 
     int puzzleCount = 0;
     int puzzlesCompleted = 0;
@@ -43,10 +47,14 @@ public class UIHandler : MonoBehaviour
         else Destroy(gameObject);
     }
 
+    private void Start()
+    {
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        if (isBlackScreenVisible && !isTransitioning) StartCoroutine(FadeFromBlack(1.0f));
     }
 
     public void SetLevel(int lvl)
@@ -166,5 +174,43 @@ public class UIHandler : MonoBehaviour
     {
         GameManager.instance.TogglePaused(false);
         StartCoroutine(SlidePanel(controlsInfo, hiddenY, animationDuration));
+    }
+
+    IEnumerator FadeFromBlack(float fadeTime)
+    {
+        isTransitioning = true;
+
+        float currentTime = 0.0f;
+        float waitTime = 1f;
+
+        while(currentTime < waitTime)
+        {
+            currentTime += Time.deltaTime;
+            yield return null;
+        }
+
+        currentTime = 0;
+
+        while (currentTime < fadeTime)
+        {
+            float t = currentTime / fadeTime;
+            float fade_t = t * t * t * t * t;
+
+            Debug.Log("Anim prog: " + t);
+
+            Color c = blackScreen.GetComponent<Image>().color;
+            blackScreen.GetComponent<Image>().color = new Color(c.r, c.g, c.b, 1.0f - fade_t);
+
+            currentTime += Time.deltaTime;
+
+            yield return null;
+        }
+
+        blackScreen.gameObject.SetActive(false);
+
+        isTransitioning = false;
+        isBlackScreenVisible = false;
+
+        yield return null;
     }
 }
