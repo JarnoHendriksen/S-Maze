@@ -6,6 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Settings/Scenes/2D URP Scene Template.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/MainMenu.unity
+    guid: eed4cfe88feced34da7fbb312559c961
+  - enabled: 1
+    path: Assets/Scenes/S-Maze.unity
+    guid: 94ec2006ef1b6854f98a1180348fb2fb
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
