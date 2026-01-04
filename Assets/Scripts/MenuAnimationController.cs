@@ -82,12 +82,13 @@ public class MenuAnimationController : MonoBehaviour
         }
     }
 
-    float Easing(EasingFunc func, float x)
+    public static float Easing(EasingFunc func, float x)
     {
         return func switch
         {
             EasingFunc.Linear => x,
             EasingFunc.EaseInQuad => x * x,
+            EasingFunc.EaseInOutQuad => x < 0.5 ? 4 * x * x * x : 1 - Mathf.Pow(-2 * x + 2, 3) / 2,
             EasingFunc.EaseInCubic => x * x * x,
             EasingFunc.EaseInQuart => x * x * x * x,
             EasingFunc.EaseInBounce => 1f - EaseOutBounce(x),
@@ -96,7 +97,7 @@ public class MenuAnimationController : MonoBehaviour
         };
     }
 
-    float EaseOutBounce(float x)
+    public static float EaseOutBounce(float x)
     {
         float n1 = 7.5625f;
         float d1 = 2.75f;
@@ -124,6 +125,7 @@ public enum EasingFunc
 {
     Linear,
     EaseInQuad,
+    EaseInOutQuad,
     EaseInCubic,
     EaseInQuart,
     EaseInBounce,

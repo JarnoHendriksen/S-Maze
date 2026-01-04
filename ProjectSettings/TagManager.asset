@@ -9,6 +9,7 @@ TagManager:
   - fake_wall_parent
   - door
   - item
+  - exit
   layers:
   - Default
   - TransparentFX

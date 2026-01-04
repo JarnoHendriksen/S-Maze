@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
 
         set
         {
-            UIHandler.instance.SetLevel(value);
             level = value;
         }
     }
@@ -49,8 +48,15 @@ public class GameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        UIHandler.instance.SetLevel(level);
+        // TODO: look for savefile and load data
 
+        // If no savefile, start with level 1
+        Level = 1;
+
+        MazeBuilder.instance.Init();
+        MazeBuilder.instance.GenerateMaze();
+
+        UIHandler.instance.SetLevel(level);
         UIHandler.instance.SetPuzzleCount(MazeBuilder.instance.QuestCount);
 
         // Start game paused, since control menu is showing
@@ -62,6 +68,28 @@ public class GameManager : MonoBehaviour
         GamePaused = !GamePaused;
 
         if (togglePausePanel) UIHandler.instance.TogglePause();
+    }
+
+    public void LoadNextLevel()
+    {
+        // Hide game by sliding black screen over it
+        UIHandler.instance.HideScreen();
+
+        // Delete old level in MazeBuilder
+        MazeBuilder.instance.DeleteMaze();
+
+        Level++;
+
+        // Build next maze
+        MazeBuilder.instance.GenerateMaze(Level);
+
+        // Reset UI elements
+        UIHandler.instance.ResetUI();
+        UIHandler.instance.SetLevel(Level);
+        UIHandler.instance.SetPuzzleCount(MazeBuilder.instance.QuestCount); // TODO: attach quests to rooms instead of mazebuilder
+
+        // Slide black screen out of view
+        UIHandler.instance.ShowScreen();
     }
 }
 

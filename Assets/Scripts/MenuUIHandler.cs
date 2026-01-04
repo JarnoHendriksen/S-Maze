@@ -22,19 +22,7 @@ public class MenuUIHandler : MonoBehaviour
     public void StartGame()
     {
         playBtnPressed = true;
-        //float currentTime = 0.0f;
 
-        //// Animate Transition
-        //StartCoroutine(StartGameAnimation(animationTime));
-
-        //// Wait for animation to finish
-        //while (currentTime < animationTime + 2f)
-        //{
-        //    currentTime += Time.deltaTime;
-        //}
-
-        //// Switch to Game Scene
-        //SceneManager.LoadScene("S-Maze");
     }
 
     public void OpenSettings()
@@ -72,7 +60,7 @@ public class MenuUIHandler : MonoBehaviour
         while (currentTime < duration)
         {
             float t = currentTime / duration;
-            Debug.Log("Animation progress: " + t);
+
             // Slide menu elements to the right and fade out
             float slideUI_t = EaseInOutCubic(t);
             uiElements.transform.position = Vector3.Lerp(uiElementsStartPos, uiElementsEndPos, slideUI_t);

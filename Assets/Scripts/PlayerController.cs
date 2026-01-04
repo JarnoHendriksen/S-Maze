@@ -37,6 +37,11 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             UIHandler.instance.PuzzleCompleted();
+            UIHandler.instance.ShowTextPrompt("Puzzle Completed!");
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            GameManager.instance.LoadNextLevel();
         }
 
         if (GameManager.instance.GamePaused) return;
@@ -87,6 +92,12 @@ public class PlayerController : MonoBehaviour
 
             PlayerInventory.instance.CollectItem(idat);
             Destroy(collision.gameObject);
+        }
+        else if (collision.CompareTag("exit"))
+        {
+            // If all puzzles completed: pause game & trigger level completed screen
+            // Else: Show prompt to complete all levels
+            UIHandler.instance.ShowTextPrompt("You need to complete all puzzles before you can leave!");
         }
     }
 
