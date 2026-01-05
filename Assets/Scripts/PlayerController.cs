@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            GameManager.instance.LoadNextLevel();
+            StartCoroutine(GameManager.instance.LoadNextLevel());
         }
 
         if (GameManager.instance.GamePaused) return;

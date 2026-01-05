@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEditor.SearchService;
 
 using ParseFunc = System.Func<PixelData, ColorConstraints, bool>;
+using System.Collections;
 
 public class MazeBuilder : MonoBehaviour
 {
@@ -47,6 +48,8 @@ public class MazeBuilder : MonoBehaviour
     float cellSizeInUnits;
 
     PlayerController playerCtrl;
+
+    public bool Ready { get; private set; }
 
     private void Awake()
     {
@@ -101,21 +104,24 @@ public class MazeBuilder : MonoBehaviour
         }
     }
 
-    public void GenerateMaze(int level = 1)
+    public IEnumerator GenerateMaze(int level = 1)
     {
+        Ready = false;
+
         switch (level)
         {
             case 1:
-                Img2Map(level1);
+                yield return Img2Map(level1);
                 break;
             case 2:
-                Img2Map(level2);
+                yield return Img2Map(level1);
                 break;
             case 3:
-                Img2Map(level3);
+                yield return Img2Map(level1);
                 break;
             default:
-                return;
+                yield return null;
+                break;
         }
 
         List<Item> allRequiredItems = new();
@@ -145,7 +151,9 @@ public class MazeBuilder : MonoBehaviour
 
         QuestCount = rooms.Count;
 
-        UIHandler.instance.ShowScreen();
+        Ready = true;
+
+        yield return null;
     }
 
     bool TouchesSpace(bool[] isWall, Vector2 coord, Vector2 mazeDim)
@@ -171,8 +179,10 @@ public class MazeBuilder : MonoBehaviour
         return false;
     }
 
-    Vector2 Img2Map(Texture2D layout)
+    IEnumerator Img2Map(Texture2D layout)
     {
+        Ready = false;
+
         int w = layout.width;
         int h = layout.height;
 
@@ -237,6 +247,8 @@ public class MazeBuilder : MonoBehaviour
                     funcIdx++;
                 }
             }
+
+            yield return null;
         }
 
         // Instantiate only the wall cells that are adjacent to the floor tiles
@@ -250,9 +262,12 @@ public class MazeBuilder : MonoBehaviour
                     newWall.SetParent(wallObjects);
                 }
             }
+            yield return null;
         }
 
-        return new Vector2(w, h);
+        Ready = true;
+
+        yield return null;
     }
 
     Transform CreateCell(int x, int y, GameObject cellType)
@@ -356,13 +371,7 @@ public class MazeBuilder : MonoBehaviour
             int placeholderIdx = UnityEngine.Random.Range(0, allPlaceholders.Count);
             int itemIdx = UnityEngine.Random.Range(0, itemsToDistribute.Count);
 
-            //allPlaceholders[placeholderIdx].type = itemsToDistribute[itemIdx].type;
-            //allPlaceholders[placeholderIdx].value = itemsToDistribute[itemIdx].value;
-
             allPlaceholders[placeholderIdx].Init(noteSprites, itemsToDistribute[itemIdx].type, itemsToDistribute[itemIdx].value, true);
-
-            //if (itemsToDistribute[itemIdx].sprite != null)
-            //    allPlaceholders[placeholderIdx].GetComponent<SpriteRenderer>().sprite = itemsToDistribute[itemIdx].sprite;
 
             allPlaceholders.RemoveAt(placeholderIdx);
             itemsToDistribute.RemoveAt(itemIdx);

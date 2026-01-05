@@ -137,11 +137,15 @@ public class UIHandler : MonoBehaviour
 
     public void ShowScreen(float waitTime = 0.0f)
     {
+        if (!isBlackScreenVisible) return;
+
         StartCoroutine(FadeBlack(animationDuration, waitTime, false));
     }
 
     public void HideScreen()
     {
+        if (isBlackScreenVisible) return;
+
         StartCoroutine(FadeBlack(animationDuration));
     }
 
@@ -244,10 +248,13 @@ public class UIHandler : MonoBehaviour
             yield return null;
         }
 
+        Color c_ = blackScreen.GetComponent<Image>().color;
+        blackScreen.GetComponent<Image>().color = new Color(c_.r, c_.g, c_.b, toBlack ? 1.0f : 0.0f);
+
         if (!toBlack) blackScreen.gameObject.SetActive(false);
 
         isTransitioning = false;
-        isBlackScreenVisible = false;
+        isBlackScreenVisible = toBlack;
 
         yield return null;
     }
