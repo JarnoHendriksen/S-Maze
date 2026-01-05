@@ -6,6 +6,8 @@ using System;
 using System.Linq;
 using UnityEditor.SearchService;
 
+using ParseFunc = System.Func<PixelData, ColorConstraints, bool>;
+
 public class MazeBuilder : MonoBehaviour
 {
     public static MazeBuilder instance;
@@ -23,13 +25,22 @@ public class MazeBuilder : MonoBehaviour
     [SerializeField] Transform wallObjects;
     [SerializeField] Transform fakeWallObjects;
     [SerializeField] Transform floorObjects;
+    [SerializeField] Transform doorObjects;
     [SerializeField] Transform itemObjects;
+    [SerializeField] Transform roomObjects;
 
-    [SerializeField] List<Quest> quests;
+    [Header("Maze Layouts")]
+    [SerializeField] Texture2D level1;
+    [SerializeField] Texture2D level2;
+    [SerializeField] Texture2D level3;
 
     [Header("")]
     [SerializeField] Transform player;
     [SerializeField] Texture2D mazeLayout;
+    [SerializeField] List<Quest> quests;
+    [SerializeField] List<RoomPrefab> roomPrefabs;
+
+    List<Room> rooms;
 
     public int QuestCount { get; private set; }
 
@@ -42,38 +53,23 @@ public class MazeBuilder : MonoBehaviour
         if (instance == null) instance = this;
         else Destroy(gameObject);
 
-        QuestCount = quests.Count;
+        rooms = new();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        
+    }
+
+    // Only call from GameManager.Start() to make sure
+    // MazeBuilder is initialized before trying to generate maze
+    public void Init()
+    {
+        QuestCount = quests.Count;
+
         Sprite wallSprite = wallCell.GetComponent<SpriteRenderer>().sprite;
         cellSizeInUnits = wallSprite.bounds.size.x;
-
-        Img2Map();
-
-        List<Item> allRequiredItems = new();
-
-        foreach (var q in quests)
-        {
-            foreach (var id in q.requiredItemIds)
-            {
-                Item item = GameManager.instance.items.Find(x => x.id.Equals(id));
-                allRequiredItems.Add(item);
-            }
-        }
-
-        for (int i = 0; i < allRequiredItems.Count / 10 + 1; i++)
-        {
-            int idx = UnityEngine.Random.Range(0, GameManager.instance.items.Count);
-            allRequiredItems.Add(GameManager.instance.items[idx]);
-        }
-
-        PopulateItemPlaceholders(allRequiredItems);
-        RemoveUnusedPlaceholders();
-
-        fakeWallObjects.GetComponent<CompositeCollider2D>().GenerateGeometry();
 
         playerCtrl = player.GetComponent<PlayerController>();
     }
@@ -105,43 +101,134 @@ public class MazeBuilder : MonoBehaviour
         }
     }
 
-    void Img2Map()
+    public void GenerateMaze(int level = 1)
     {
-        int w = mazeLayout.width;
-        int h = mazeLayout.height;
+        switch (level)
+        {
+            case 1:
+                Img2Map(level1);
+                break;
+            case 2:
+                Img2Map(level2);
+                break;
+            case 3:
+                Img2Map(level3);
+                break;
+            default:
+                return;
+        }
+
+        List<Item> allRequiredItems = new();
+
+        foreach (var q in quests)
+        {
+            foreach (var id in q.requiredItemIds)
+            {
+                Item item = GameManager.instance.items.Find(x => x.id.Equals(id));
+                allRequiredItems.Add(item);
+            }
+        }
+
+        for (int i = 0; i < allRequiredItems.Count / 10 + 1; i++)
+        {
+            int idx = UnityEngine.Random.Range(0, GameManager.instance.items.Count);
+            allRequiredItems.Add(GameManager.instance.items[idx]);
+        }
+
+        PopulateItemPlaceholders(allRequiredItems);
+        RemoveUnusedPlaceholders();
+
+        // Combine colliders of child objects
+        fakeWallObjects.GetComponent<CompositeCollider2D>().GenerateGeometry();
+
+        wallObjects.GetComponent<CompositeCollider2D>().GenerateGeometry();
+
+        QuestCount = rooms.Count;
+
+        UIHandler.instance.ShowScreen();
+    }
+
+    bool TouchesSpace(bool[] isWall, Vector2 coord, Vector2 mazeDim)
+    {
+        int idx = (int)coord.x + (int)coord.y * (int)mazeDim.x;
+
+        if (!isWall[idx]) return false;
+
+        int mazeSize = (int)(mazeDim.x * mazeDim.y);
+
+        if (idx - 1 >= 0 && idx - 1 < mazeSize)
+            if (!isWall[idx - 1]) return true;
+
+        if (idx + 1 >= 0 && idx + 1 < mazeSize)
+            if (!isWall[idx + 1]) return true;
+
+        if (idx - mazeDim.x >= 0 && idx - mazeDim.x < mazeSize)
+            if (!isWall[idx - (int)mazeDim.x]) return true;
+
+        if (idx + mazeDim.x >= 0 && idx + mazeDim.x < mazeSize)
+            if (!isWall[idx + (int)mazeDim.x]) return true;
+
+        return false;
+    }
+
+    Vector2 Img2Map(Texture2D layout)
+    {
+        int w = layout.width;
+        int h = layout.height;
+
+        bool[] isWall = new bool[w * h];
 
         Transform newCell;
+
+        // Color coding:
+        // Player: #ff0000
+        // Door: #ffffXX, XX = clockwise rotation percentage in hex (i.e. 19 = 25%, 32 = 50%, 4b = 75%)
+        // Item: #ffXXff, XX = room id (prevents items required for a room to be locked behind closed doors)
+        // Hidden corridor: #505050
+        // Room: #XXY0ZZ, XX = room id (10-99), Y = level id (0, 1, 2), ZZ = orientation
+        // Exit: #beeeef
+
+        ColorSet validOrientations = new(0x00, 0x19, 0x32, 0x4b);
+        ColorRange validRoomIds = new(0x10, 0x99);
+        ColorSet validLevelIds = new(0x00, 0x10, 0x20);
+
+        ColorConstraints playerColor = new(0xff, 0x00, 0x00);
+        ColorConstraints doorColor = new(new ExactColor(0xff), new ExactColor(0xff), validOrientations);
+        ColorConstraints objectColor = new(new ExactColor(0xff), validRoomIds, new ExactColor(0xff));
+        ColorConstraints hiddenPathColor = new(new ExactColor(0x50), new ExactColor(0x50), new ExactColor(0x50));
+        ColorConstraints roomColor = new(validRoomIds, validLevelIds, validOrientations);
+        ColorConstraints exitColor = new(0xbe, 0xee, 0xef);
 
         for (int x = 0; x < w; x++)
         {
             for (int y = 0; y < h; y++)
             {
-                Color pixel = mazeLayout.GetPixel(x, y);
+                Color pixel = layout.GetPixel(x, y);
                 if (pixel == Color.black)
                 {
-                    newCell = CreateCell(x, y, wallCell);
-                    newCell.SetParent(wallObjects);
+                    // Only mark that this is a wall position
+                    // Do not instantiate yet
+                    isWall[x + y * w] = true;
                     continue;
                 }
                 else
                 {
                     newCell = CreateCell(x, y, floorCell);
                     newCell.SetParent(floorObjects);
+                    isWall[x + y * w] = false;
                 }
 
-                PixelData pd = new PixelData(x, y, pixel);
-                ColorConstraints playerColor = new (new ExactColor(0xff), new ExactColor(0x00), new ExactColor(0x00)); // #ff0000
-                ColorSet validDoorOrientations = new (0x00, 0x19, 0x32, 0x4b);
-                ColorConstraints doorColor = new (new ExactColor(0xff), new ExactColor(0xff), validDoorOrientations); // #ffff00, #ffff19, #ffff32, #ffff4b
-                ColorConstraints objectColor = new (new ExactColor(0x00), new ExactColor(0x00), new ExactColor(0xff)); // #0000ff
-                ColorConstraints hiddenPathColor = new (new ExactColor(0x50), new ExactColor(0x50), new ExactColor(0x50)); // #505050
-                ColorConstraints roomColor = new ColorConstraints(new ExactColor(0xff), new ColorRange(0x00, 0x99), new ExactColor(0xff)); // #ff00ff - #ff99ff
-                ColorConstraints exitColor = new ColorConstraints(new ExactColor(0xbe), new ExactColor(0xee), new ExactColor(0xef)); // #beeeef
+                PixelData pd = new (x, y, pixel);
 
                 bool success = false;
 
-                (Func<PixelData, ColorConstraints, bool> parser, ColorConstraints cc)[] parsers =
-                    { (ParsePlayer, playerColor), (ParseDoor, doorColor), (ParseObject, objectColor), (ParseHiddenPath, hiddenPathColor), (ParseRoom, roomColor), (ParseExit, exitColor) };
+                (ParseFunc parser, ColorConstraints cc)[] parsers =
+                { 
+                    (ParsePlayer, playerColor), (ParseDoor, doorColor),
+                    (ParseObject, objectColor), (ParseHiddenPath, hiddenPathColor),
+                    (ParseRoom, roomColor), (ParseExit, exitColor)
+                };
+
                 int funcIdx = 0;
 
                 while(!success && funcIdx < parsers.Length)
@@ -151,6 +238,21 @@ public class MazeBuilder : MonoBehaviour
                 }
             }
         }
+
+        // Instantiate only the wall cells that are adjacent to the floor tiles
+        for (int x = 0; x < w; x++)
+        {
+            for (int y = 0; y < h; y++)
+            {
+                if (TouchesSpace(isWall, new Vector2(x, y), new Vector2(w, h)))
+                {
+                    Transform newWall = CreateCell(x, y, wallCell);
+                    newWall.SetParent(wallObjects);
+                }
+            }
+        }
+
+        return new Vector2(w, h);
     }
 
     Transform CreateCell(int x, int y, GameObject cellType)
@@ -176,9 +278,8 @@ public class MazeBuilder : MonoBehaviour
         if (!cc.red.IsValid(r) || !cc.green.IsValid(g) || !cc.blue.IsValid(b)) return false;
 
         Transform door = CreateCell(pixel.position.x, pixel.position.y, doorCell);
-        door.SetParent(itemObjects);
+        door.SetParent(doorObjects);
         float rotation = b / 100f;
-        Debug.Log(rotation);
         door.eulerAngles = new Vector3(0, 0, -360f * rotation);
 
         return true;
@@ -240,16 +341,28 @@ public class MazeBuilder : MonoBehaviour
         List<ItemData> allPlaceholders = itemObjects.GetComponentsInChildren<ItemData>().ToList();
         List<Item> itemsToDistribute = requiredItems;
 
+        var sprites = Resources.LoadAll<Sprite>("NoteSymbols");
+        Dictionary<string, Sprite> noteSprites = new();
+
+        foreach (var s in sprites)
+        {
+            noteSprites.Add(s.name, s);
+        }
+
+        Debug.Log("Sprite count: " + noteSprites.Count);
+
         while (itemsToDistribute.Count > 0)
         {
             int placeholderIdx = UnityEngine.Random.Range(0, allPlaceholders.Count);
             int itemIdx = UnityEngine.Random.Range(0, itemsToDistribute.Count);
 
-            allPlaceholders[placeholderIdx].type = itemsToDistribute[itemIdx].type;
-            allPlaceholders[placeholderIdx].value = itemsToDistribute[itemIdx].value;
+            //allPlaceholders[placeholderIdx].type = itemsToDistribute[itemIdx].type;
+            //allPlaceholders[placeholderIdx].value = itemsToDistribute[itemIdx].value;
 
-            if (itemsToDistribute[itemIdx].sprite != null)
-                allPlaceholders[placeholderIdx].GetComponent<SpriteRenderer>().sprite = itemsToDistribute[itemIdx].sprite;
+            allPlaceholders[placeholderIdx].Init(noteSprites, itemsToDistribute[itemIdx].type, itemsToDistribute[itemIdx].value, true);
+
+            //if (itemsToDistribute[itemIdx].sprite != null)
+            //    allPlaceholders[placeholderIdx].GetComponent<SpriteRenderer>().sprite = itemsToDistribute[itemIdx].sprite;
 
             allPlaceholders.RemoveAt(placeholderIdx);
             itemsToDistribute.RemoveAt(itemIdx);
@@ -267,6 +380,31 @@ public class MazeBuilder : MonoBehaviour
                 Destroy(item.gameObject);
             }
         }
+    }
+
+    void DestroyAllChildren(Transform parent)
+    {
+        for (int i = parent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(parent.GetChild(i).gameObject);
+        }
+    }
+
+    public void DeleteMaze()
+    {
+        DestroyAllChildren(wallObjects);
+        DestroyAllChildren(floorObjects);
+        DestroyAllChildren(itemObjects);
+        DestroyAllChildren(fakeWallObjects);
+        DestroyAllChildren(doorObjects);
+        DestroyAllChildren(roomObjects);
+
+        for (int i = transform.childCount - 1; i >= 0; i--)
+        {
+            if (transform.GetChild(i).gameObject.CompareTag("exit"))
+                Destroy(transform.GetChild(i).gameObject);
+        }
+        rooms.Clear();
     }
 
     public static (byte, byte, byte) ToRGB255(Color c)
@@ -335,6 +473,12 @@ public class ColorConstraints
         green = g;
         blue = b;
     }
+    public ColorConstraints(byte r, byte g, byte b)
+    {
+        red = new ExactColor(r);
+        green = new ExactColor(g);
+        blue = new ExactColor(b);
+    }
 }
 
 public abstract class IColorConstraint
@@ -397,7 +541,32 @@ public class ColorRange : IColorConstraint
 [System.Serializable]
 public class Quest
 {
+    public byte id;
     public string name;
     public string description;
     public List<int> requiredItemIds;
+}
+
+[System.Serializable]
+public class RoomPrefab
+{
+    public GameObject prefab;
+
+    [Tooltip("Can be used to prevent more complicated puzzles from appearing too soon.")]
+    public byte minimumLevel;
+    public Quest quest;
+}
+
+public class Room
+{
+    public Transform transform;
+    public byte questId;
+    public byte roomId;
+
+    public Room(byte roomId, Transform transform, byte questId)
+    {
+        this.roomId = roomId;
+        this.transform = transform;
+        this.questId = questId;
+    }
 }
