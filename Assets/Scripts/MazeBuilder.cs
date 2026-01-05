@@ -16,6 +16,8 @@ public class MazeBuilder : MonoBehaviour
     [SerializeField] GameObject doorCell;
     [SerializeField] GameObject fakeWallCell;
     [SerializeField] GameObject itemPlaceholder;
+    [SerializeField] GameObject room11x11Prefab;
+    [SerializeField] GameObject exitCell;
 
     [Header("Maze Object Containers")]
     [SerializeField] Transform wallObjects;
@@ -204,22 +206,31 @@ public class MazeBuilder : MonoBehaviour
         return true;
     }
 
-    bool ParseRoom(PixelData pixel, ColorConstraints cc)
+    bool ParseRoom(PixelData pixel, ColorConstraints cc)    // Creates a room with a set of three possible spawns of forniture, texture and more complex structure are coming
     {
         (byte r, byte g, byte b) = ToRGB255(pixel.color);
         if (!cc.red.IsValid(r) || !cc.green.IsValid(g) || !cc.blue.IsValid(b)) return false;
 
-        // TODO: Select room from prefab list (randomly, or based on color encoding) and instantiate
+        float originX = (pixel.position.x - 5) * cellSizeInUnits;
+        float originY = (pixel.position.y - 5) * cellSizeInUnits;
+        Vector3 finalPos = new Vector3(originX, originY, 0);
+        GameObject newRoom = Instantiate(room11x11Prefab, finalPos, Quaternion.identity);
+
+        newRoom.transform.SetParent(floorObjects);
 
         return true;
     }
 
-    bool ParseExit(PixelData pixel, ColorConstraints cc)
+    bool ParseExit(PixelData pixel, ColorConstraints cc)    // The player just need to pass throw, we can set that he also have to press space
     {
         (byte r, byte g, byte b) = ToRGB255(pixel.color);
         if (!cc.red.IsValid(r) || !cc.green.IsValid(g) || !cc.blue.IsValid(b)) return false;
 
-        // TODO: Instantiate empty object with trigger collider and "exit" tag
+        Transform exit = CreateCell(pixel.position.x, pixel.position.y, exitCell);
+
+        exit.SetParent(itemObjects);
+
+        exit.name = $"Exit_{pixel.position.x}_{pixel.position.y}";
 
         return true;
     }
@@ -379,7 +390,7 @@ public class ColorRange : IColorConstraint
 
     public override bool IsValid(byte v)
     {
-        return v >= min || v <= max;
+        return v >= min && v <= max;       // Changed because causing problems with the spawning of forniture in the secret rooms
     }
 }
 
