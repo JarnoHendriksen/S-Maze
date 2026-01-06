@@ -28,16 +28,17 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             GameManager.instance.GamePaused = !GameManager.instance.GamePaused;
-            UIHandler.instance.PauseBtnClick();
+            UIHandler.instance.PauseBtnClick(false);
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            UIHandler.instance.SettingsBtnClick();
+            UIHandler.instance.SettingsBtnClick(false);
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             UIHandler.instance.PuzzleCompleted();
             UIHandler.instance.ShowTextPrompt("Puzzle Completed!");
+            AudioSystem.instance.PlaySoundEffect(SoundEffectType.PuzzleCompleted);
         }
         if (Input.GetKeyDown(KeyCode.R))
         {

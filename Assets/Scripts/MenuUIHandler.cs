@@ -22,16 +22,18 @@ public class MenuUIHandler : MonoBehaviour
     public void StartGame()
     {
         playBtnPressed = true;
-
+        AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
     }
 
     public void OpenSettings()
     {
+        AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
         // MainMenuUIHandler.instance.OpenSettings();
     }
 
     public void ExitGame()
     {
+        AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
         Application.Quit();
     }
 

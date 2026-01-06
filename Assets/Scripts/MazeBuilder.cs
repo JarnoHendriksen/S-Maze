@@ -344,7 +344,7 @@ public class MazeBuilder : MonoBehaviour
 
         Transform exit = CreateCell(pixel.position.x, pixel.position.y, exitCell);
 
-        exit.SetParent(itemObjects);
+        exit.SetParent(doorObjects);
 
         exit.name = $"Exit_{pixel.position.x}_{pixel.position.y}";
 
