@@ -334,6 +334,13 @@ public class MazeBuilder : MonoBehaviour
 
         newRoom.transform.SetParent(floorObjects);
 
+        // This is needed because rooms.Count is used to determine the number of puzzles.
+        // Might change it back to using quests.Count, though.
+        Room room = new Room(r, newRoom.transform, 0);
+        // TODO: Attach RoomData component to random_room and initialize
+        // newRoom.GetComponent<RoomData>().Init(room);
+        rooms.Add(room);
+
         return true;
     }
 
@@ -344,7 +351,7 @@ public class MazeBuilder : MonoBehaviour
 
         Transform exit = CreateCell(pixel.position.x, pixel.position.y, exitCell);
 
-        exit.SetParent(itemObjects);
+        exit.SetParent(doorObjects);
 
         exit.name = $"Exit_{pixel.position.x}_{pixel.position.y}";
 

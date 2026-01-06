@@ -162,15 +162,19 @@ public class UIHandler : MonoBehaviour
 
     // // BUTTON CALLBACKS // //
 
-    public void PauseBtnClick()
+    public void PauseBtnClick(bool playSound = true)
     {
         if (isSettingsOpen) return; // Pause already controlled by settings menu
+
+        if (playSound) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
 
         GameManager.instance.TogglePaused();
     }
 
-    public void SettingsBtnClick()
+    public void SettingsBtnClick(bool playSound = true)
     {
+        if (playSound) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
+
         // Don't unpause if already paused when clicking settings and vice versa
         if ((!GameManager.instance.GamePaused && !isSettingsOpen)
             || (GameManager.instance.GamePaused && isSettingsOpen)) GameManager.instance.TogglePaused(false);
@@ -188,8 +192,9 @@ public class UIHandler : MonoBehaviour
         }
     }
 
-    public void ControlsPanelBtnClick()
+    public void ControlsPanelBtnClick(bool playSound = true)
     {
+        if (playSound) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
         GameManager.instance.TogglePaused(false);
         StartCoroutine(SlidePanel(controlsInfo, hiddenY, animationDuration));
     }
