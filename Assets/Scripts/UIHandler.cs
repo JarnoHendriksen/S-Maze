@@ -194,8 +194,9 @@ public class UIHandler : MonoBehaviour
 
     public void ControlsPanelBtnClick(bool playSound = true)
     {
-        if (playSound) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
+        //if (playSound) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
         GameManager.instance.TogglePaused(false);
+
         StartCoroutine(SlidePanel(controlsInfo, hiddenY, animationDuration));
     }
 

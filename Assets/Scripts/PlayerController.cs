@@ -10,8 +10,9 @@ public class PlayerController : MonoBehaviour
     public Rigidbody2D rb;
     Vector2 moveDirection;
     Vector2 mousePosition;
+    private int currentLevel = 1;
 
-    bool isPlayerCloseToDoor = false;
+    bool isPlayerCloseToDoor = false;       
     public float proximityThreshold = 1.0f;
 
     public bool IsInWall { get; private set; }
@@ -42,6 +43,8 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
+            DataCollector.Instance.LevelUp(currentLevel);
+            currentLevel++;
             StartCoroutine(GameManager.instance.LoadNextLevel());
         }
 
@@ -68,7 +71,7 @@ public class PlayerController : MonoBehaviour
 
             isPlayerCloseToDoor = true;
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E) && isPlayerCloseToDoor)
             {
                 mazeBuilder.openDoor(theDoor);
             }
@@ -97,6 +100,7 @@ public class PlayerController : MonoBehaviour
         else if (collision.CompareTag("exit"))
         {
             // If all puzzles completed: pause game & trigger level completed screen
+            // Log that next level was entered
             // Else: Show prompt to complete all levels
             UIHandler.instance.ShowTextPrompt("You need to complete all puzzles before you can leave!");
         }

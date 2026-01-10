@@ -14,9 +14,8 @@ public class DataCollector : MonoBehaviour
     public bool isLoggingEnabled = true;
 
     private float sessionStartTime;
-    private int numberOfItems = 0;
     private int currentLevel = 1;
-    private Dictionary<ItemData, string> itemsCollector = new();
+    private Dictionary<string, string> itemsCollector = new();
 
     private List<DataInfo> SessionData = new();
 
@@ -37,15 +36,15 @@ public class DataCollector : MonoBehaviour
     public void LogItemCollected(ItemData item)
     {
         if (!isLoggingEnabled) return;
-        itemsCollector.Add(item, (Time.time - sessionStartTime).ToString("F2"));
+        itemsCollector.Add((Time.time - sessionStartTime).ToString("F2"), (item.type.ToString() + " " + item.value));
     }
 
-    public void LevelUp(int nextLevel)
+    public void LevelUp(int levelCompleted)
     {
         if (!isLoggingEnabled) return;
         if (currentLevel < 3)
         {
-            currentLevel = nextLevel;
+            currentLevel = levelCompleted;
         } else
         {
             currentLevel = 1;
@@ -66,7 +65,7 @@ public class DataCollector : MonoBehaviour
         {
             timeLevel = TotalTime,
             numberLevel = currentLevel,
-            itemsCollected = new Dictionary<ItemData, string>(itemsCollector)
+            itemsCollected = new Dictionary<string, string>(itemsCollector)
         };
         SessionData.Add(data);
 
@@ -78,7 +77,6 @@ public class DataCollector : MonoBehaviour
     {
         SessionData.Clear();
         sessionStartTime = Time.time;
-        numberOfItems = 0;
         itemsCollector.Clear();
     }
 
@@ -96,7 +94,9 @@ public class DataCollector : MonoBehaviour
         }
         string filePath = Path.Combine(customFolder, "DataLog.txt");
 
-        string collectedItemsString = string.Join(", ", entry.itemsCollected.Select(kvp => $"[{kvp.Key.name}: {kvp.Value}]"));
+        string collectedItemsString = string.Join(", ", entry.itemsCollected.Select(kvp =>
+            $"[{kvp.Value}: {kvp.Key:F2}]"));
+
         using (StreamWriter writer = new StreamWriter(filePath, true)) //Append to file
         {
             string LogEntry = $"[LEVEL COMPLETED] " +
@@ -113,6 +113,6 @@ public class DataCollector : MonoBehaviour
     {
         public float timeLevel;
         public int numberLevel;
-        public Dictionary<ItemData, string> itemsCollected;
+        public Dictionary<string, string> itemsCollected;
     }
 }
