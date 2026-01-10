@@ -9,11 +9,12 @@ TagManager:
   - fake_wall_parent
   - door
   - item
+  - Exit
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
   - 
@@ -45,6 +46,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3445508681
+    locked: 0
+  - name: Ground
+    uniqueID: 4261475947
     locked: 0
   m_RenderingLayers:
   - Default
