@@ -30,6 +30,8 @@ public class PlayerInventory : MonoBehaviour
 
         Debug.Log("Obtained item: " + item.type.ToString() + " " + item.value);
         Debug.Log("Currently in inventory: " + PrintInventory());
+
+        DataCollector.Instance.LogItemCollected(item);
     }
 
     public List<InventoryItem> MissingItems(List<InventoryItem> query)

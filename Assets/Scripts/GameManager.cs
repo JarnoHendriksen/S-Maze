@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -50,14 +51,11 @@ public class GameManager : MonoBehaviour
     {
         // TODO: look for savefile and load data
 
-        // If no savefile, start with level 1
-        Level = 1;
+        // If no savefile, start with level 1 (Set to 0 because LoadNextLevel increments it)
+        Level = 0;
 
         MazeBuilder.instance.Init();
-        MazeBuilder.instance.GenerateMaze();
-
-        UIHandler.instance.SetLevel(level);
-        UIHandler.instance.SetPuzzleCount(MazeBuilder.instance.QuestCount);
+        StartCoroutine(LoadNextLevel());
 
         // Start game paused, since control menu is showing
         TogglePaused(false);
@@ -70,10 +68,14 @@ public class GameManager : MonoBehaviour
         if (togglePausePanel) UIHandler.instance.TogglePause();
     }
 
-    public void LoadNextLevel()
+    public IEnumerator LoadNextLevel()
     {
         // Hide game by sliding black screen over it
         UIHandler.instance.HideScreen();
+
+        float waitTime = 1.0f;
+
+        yield return new WaitForSeconds(waitTime);
 
         // Delete old level in MazeBuilder
         MazeBuilder.instance.DeleteMaze();
@@ -81,7 +83,7 @@ public class GameManager : MonoBehaviour
         Level++;
 
         // Build next maze
-        MazeBuilder.instance.GenerateMaze(Level);
+        yield return MazeBuilder.instance.GenerateMaze(Level);
 
         // Reset UI elements
         UIHandler.instance.ResetUI();
@@ -90,6 +92,8 @@ public class GameManager : MonoBehaviour
 
         // Slide black screen out of view
         UIHandler.instance.ShowScreen();
+
+        yield return null;
     }
 }
 
