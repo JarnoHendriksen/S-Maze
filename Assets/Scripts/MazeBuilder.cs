@@ -22,6 +22,9 @@ public class MazeBuilder : MonoBehaviour
     [SerializeField] GameObject room11x11Prefab;
     [SerializeField] GameObject exitCell;
 
+    [Header("Puzzles")]
+    [SerializeField] GameObject memoryPuzzlePrefab;
+
     [Header("Maze Object Containers")]
     [SerializeField] Transform wallObjects;
     [SerializeField] Transform fakeWallObjects;
@@ -44,6 +47,7 @@ public class MazeBuilder : MonoBehaviour
     List<Room> rooms;
 
     public int QuestCount { get; private set; }
+    private List<GameObject> spawnedRooms = new List<GameObject>(); // List to track rooms
 
     float cellSizeInUnits;
 
@@ -265,9 +269,29 @@ public class MazeBuilder : MonoBehaviour
             yield return null;
         }
 
-        Ready = true;
+        SpawnSecretPuzzle();
 
-        yield return null;
+        return new Vector2(w, h);
+    }
+
+    void SpawnSecretPuzzle()
+    {
+        if (spawnedRooms.Count == 0 || memoryPuzzlePrefab == null) return;
+
+        // Pick one random room from the list
+        int randomRoomIndex = UnityEngine.Random.Range(0, spawnedRooms.Count);
+        GameObject chosenRoom = spawnedRooms[randomRoomIndex];
+
+        float xOffset = 5f * cellSizeInUnits;
+        float yOffset = 8f * cellSizeInUnits;
+
+        Vector3 puzzlePos = chosenRoom.transform.position + new Vector3(xOffset, yOffset, 0);
+
+        GameObject puzzle = Instantiate(memoryPuzzlePrefab, puzzlePos, Quaternion.identity);
+
+        puzzle.transform.SetParent(chosenRoom.transform);
+
+        chosenRoom.name += "_WithPuzzle";
     }
 
     Transform CreateCell(int x, int y, GameObject cellType)
@@ -322,7 +346,7 @@ public class MazeBuilder : MonoBehaviour
         return true;
     }
 
-    bool ParseRoom(PixelData pixel, ColorConstraints cc)    // Creates a room with a set of three possible spawns of forniture, texture and more complex structure are coming
+    bool ParseRoom(PixelData pixel, ColorConstraints cc)    // Creates a room with a set of three possible spawns of forniture, texture are coming
     {
         (byte r, byte g, byte b) = ToRGB255(pixel.color);
         if (!cc.red.IsValid(r) || !cc.green.IsValid(g) || !cc.blue.IsValid(b)) return false;
@@ -334,12 +358,7 @@ public class MazeBuilder : MonoBehaviour
 
         newRoom.transform.SetParent(floorObjects);
 
-        // This is needed because rooms.Count is used to determine the number of puzzles.
-        // Might change it back to using quests.Count, though.
-        Room room = new Room(r, newRoom.transform, 0);
-        // TODO: Attach RoomData component to random_room and initialize
-        // newRoom.GetComponent<RoomData>().Init(room);
-        rooms.Add(room);
+        spawnedRooms.Add(newRoom);
 
         return true;
     }
