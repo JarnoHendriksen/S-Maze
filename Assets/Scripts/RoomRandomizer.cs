@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 public class RoomRandomizer : MonoBehaviour
 {
-    // Make this private so you don't accidentally fill it in the Inspector again!
     private List<Transform> spawnPoints;
 
     [Header("What can spawn?")]
@@ -17,7 +16,6 @@ public class RoomRandomizer : MonoBehaviour
     {
         spawnPoints = new List<Transform>();
 
-        // FIXED: Changed spelling to "Spawnpoints" (lowercase 'p') to match your image
         Transform container = transform.Find("Spawnpoints");
 
         if (container != null)
@@ -42,8 +40,6 @@ public class RoomRandomizer : MonoBehaviour
                 {
                     GameObject prefabToSpawn = potentialProps[Random.Range(0, potentialProps.Count)];
 
-                    // FIXED: This spawns the prop as a Child of the room immediately.
-                    // It uses the LIVE position of the spawn point.
                     Instantiate(prefabToSpawn, point.position, point.rotation, transform);
                 }
             }
