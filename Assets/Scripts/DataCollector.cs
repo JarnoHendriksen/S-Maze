@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Unity.Android.Gradle.Manifest;
+//using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 public class DataCollector : MonoBehaviour

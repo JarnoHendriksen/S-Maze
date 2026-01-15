@@ -48,6 +48,8 @@ public class MazeBuilder : MonoBehaviour
 
     public int QuestCount { get; private set; }
     private List<GameObject> spawnedRooms = new List<GameObject>(); // List to track rooms
+    private int currentGenerationLevel = 1;
+
 
     float cellSizeInUnits;
 
@@ -111,21 +113,14 @@ public class MazeBuilder : MonoBehaviour
     public IEnumerator GenerateMaze(int level = 1)
     {
         Ready = false;
+        currentGenerationLevel = level;
 
         switch (level)
         {
-            case 1:
-                yield return Img2Map(level1);
-                break;
-            case 2:
-                yield return Img2Map(level1);
-                break;
-            case 3:
-                yield return Img2Map(level1);
-                break;
-            default:
-                yield return null;
-                break;
+            case 1: yield return StartCoroutine(Img2Map(level1)); break;
+            case 2: yield return StartCoroutine(Img2Map(level2)); break;
+            case 3: yield return StartCoroutine(Img2Map(level3)); break;
+            default: yield break;
         }
 
         List<Item> allRequiredItems = new();
@@ -269,29 +264,49 @@ public class MazeBuilder : MonoBehaviour
             yield return null;
         }
 
-        SpawnSecretPuzzle();
-
-        return new Vector2(w, h);
+        SpawnAllPuzzles();
     }
 
-    void SpawnSecretPuzzle()
+    void SpawnAllPuzzles()
     {
         if (spawnedRooms.Count == 0 || memoryPuzzlePrefab == null) return;
 
-        // Pick one random room from the list
-        int randomRoomIndex = UnityEngine.Random.Range(0, spawnedRooms.Count);
-        GameObject chosenRoom = spawnedRooms[randomRoomIndex];
+        // Shuffle the list of rooms to ensure random locations
+        for (int i = 0; i < spawnedRooms.Count; i++)
+        {
+            GameObject temp = spawnedRooms[i];
+            int randomIndex = UnityEngine.Random.Range(i, spawnedRooms.Count);
+            spawnedRooms[i] = spawnedRooms[randomIndex];
+            spawnedRooms[randomIndex] = temp;
+        }
 
-        float xOffset = 5f * cellSizeInUnits;
-        float yOffset = 8f * cellSizeInUnits;
+        // Loop through all rooms and assign puzzles
+        for (int i = 0; i < spawnedRooms.Count; i++)
+        {
+            //get type 1, 2, 3.
+            int type = (i % 3) + 1;
 
-        Vector3 puzzlePos = chosenRoom.transform.position + new Vector3(xOffset, yOffset, 0);
+            // get base length 3, 3, 3, 4, 4, 4.
+            int length = (i / 3) + 3;
 
-        GameObject puzzle = Instantiate(memoryPuzzlePrefab, puzzlePos, Quaternion.identity);
+            GameObject chosenRoom = spawnedRooms[i];
 
-        puzzle.transform.SetParent(chosenRoom.transform);
+            float xOffset = 2.5f * cellSizeInUnits;
+            float yOffset = 8f * cellSizeInUnits;
 
-        chosenRoom.name += "_WithPuzzle";
+            Vector3 puzzlePos = chosenRoom.transform.position + new Vector3(xOffset, yOffset, 0);
+
+            GameObject puzzle = Instantiate(memoryPuzzlePrefab, puzzlePos, Quaternion.identity);
+
+            puzzle.transform.SetParent(chosenRoom.transform);
+            chosenRoom.name += $"_Puzzle_Type{type}_Len{length}";
+
+            MemoryPuzzle mpScript = puzzle.GetComponent<MemoryPuzzle>();
+            if (mpScript != null)
+            {
+                mpScript.InitPuzzle(type, length);
+            }
+        }
     }
 
     Transform CreateCell(int x, int y, GameObject cellType)

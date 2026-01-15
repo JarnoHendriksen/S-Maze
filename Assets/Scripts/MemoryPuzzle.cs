@@ -14,7 +14,15 @@ public class MemoryPuzzle : MonoBehaviour
     public List<AudioClip> noteSounds;
     public AudioClip successSound;
     public AudioClip errorSound;
-    public int difficultyLevel = 3;
+
+    [Header("Settings")]
+    public int sequenceLength = 3;
+    public int puzzleMode = 1; // 1=Normal, 2=Reverse, 3=Audio
+
+    [Header("Debug")]
+    public bool overrideSettings = false;
+    [Range(1, 3)] public int debugMode = 1;
+    [Range(3, 10)] public int debugLength = 3;
 
     [Header("State")]
     public bool canInteract = false;
@@ -33,9 +41,28 @@ public class MemoryPuzzle : MonoBehaviour
         sequence = new List<int>();
         if (statusText != null) statusText.text = "";
 
+        if (overrideSettings)
+        {
+            InitPuzzle(debugMode, debugLength);
+        }
+
         canInteract = true;
         isGameActive = false;
         isSolved = false;
+    }
+
+    public void InitPuzzle(int mode, int length)
+    {
+        if (overrideSettings)
+        {
+            puzzleMode = debugMode;
+            sequenceLength = debugLength;
+        }
+        else
+        {
+            puzzleMode = mode;
+            sequenceLength = length;
+        }
     }
 
     public void StartPuzzleGame()
@@ -43,7 +70,13 @@ public class MemoryPuzzle : MonoBehaviour
         if (isGameActive || isSolved) return;
 
         isGameActive = true;
-        if (statusText != null) statusText.text = "MEMORIZE!";
+
+        string msg = "MEMORIZE!";
+
+        if (puzzleMode == 2) msg = "REVERSE!";
+        if (puzzleMode == 3) msg = "LISTEN!";
+
+        if (statusText != null) statusText.text = msg;
 
         GenerateSequence();
         StartCoroutine(PlaySequence());
@@ -52,7 +85,7 @@ public class MemoryPuzzle : MonoBehaviour
     void GenerateSequence()
     {
         sequence.Clear();
-        for (int i = 0; i < difficultyLevel; i++)
+        for (int i = 0; i < sequenceLength; i++)
         {
             sequence.Add(Random.Range(0, keys.Count));
         }
@@ -71,8 +104,11 @@ public class MemoryPuzzle : MonoBehaviour
 
         foreach (int keyIndex in sequence)
         {
-            if (keyIndex < keys.Count)
-                StartCoroutine(keys[keyIndex].FlashKey());
+            if (puzzleMode != 3)
+            {
+                if (keyIndex < keys.Count)
+                    StartCoroutine(keys[keyIndex].FlashKey());
+            }
 
             if (keyIndex < noteSounds.Count && noteSounds[keyIndex] != null)
                 audioSource.PlayOneShot(noteSounds[keyIndex]);
@@ -95,9 +131,21 @@ public class MemoryPuzzle : MonoBehaviour
 
         if (!isGameActive) return;
 
-        Debug.Log($"Input Received: {id}. Expected: {sequence[inputIndex]}");
+        int expectedID = -1;
 
-        if (id == sequence[inputIndex])
+        if (puzzleMode == 2)
+        {
+            int reverseIndex = sequence.Count - 1 - inputIndex;
+            expectedID = sequence[reverseIndex];
+        }
+        else
+        {
+            expectedID = sequence[inputIndex];
+        }
+
+        Debug.Log($"Input: {id}. Expected: {expectedID}");
+
+        if (id == expectedID)
         {
             inputIndex++;
             if (inputIndex >= sequence.Count)
@@ -143,6 +191,12 @@ public class MemoryPuzzle : MonoBehaviour
         {
             statusText.text = "SOLVED!";
             statusText.color = Color.green;
+        }
+
+        if (UIHandler.instance != null)
+        {
+            UIHandler.instance.PuzzleCompleted();
+            UIHandler.instance.ShowTextPrompt("Secret Note Found!");
         }
     }
 }
