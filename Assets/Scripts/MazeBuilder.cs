@@ -291,7 +291,7 @@ public class MazeBuilder : MonoBehaviour
 
             GameObject chosenRoom = spawnedRooms[i];
 
-            float xOffset = 2.5f * cellSizeInUnits;
+            float xOffset = 3.5f * cellSizeInUnits;
             float yOffset = 8f * cellSizeInUnits;
 
             Vector3 puzzlePos = chosenRoom.transform.position + new Vector3(xOffset, yOffset, 0);
