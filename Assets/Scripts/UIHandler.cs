@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.UIElements.Experimental;
 
@@ -23,6 +24,7 @@ public class UIHandler : MonoBehaviour
     [SerializeField] Transform gamePaused;
     [SerializeField] Transform settingsMenu;
     [SerializeField] Transform controlsInfo;
+    [SerializeField] Transform levelCompleted;
 
     [Header("")]
     [SerializeField] float animationDuration;
@@ -30,6 +32,7 @@ public class UIHandler : MonoBehaviour
     float pausePanelY = 780;
     float settingsPanelY = 200;
     float controlsPanelY = 200;
+    float levelCompletedY = 300;
     float hiddenY = 1100;
 
     bool isPanelMoving = false;
@@ -127,6 +130,26 @@ public class UIHandler : MonoBehaviour
         }
     }
 
+    public void ShowLevelCompletedScreen()
+    {
+        GameManager.instance.TogglePaused(false);
+
+        if (GameManager.instance.Level < 3)
+            levelCompleted.Find("NextLevelBtn/Text").GetComponent<TextMeshProUGUI>().text =
+                "To Level " + GameManager.instance.Level + 1;
+        else
+            levelCompleted.Find("NextLevelBtn/Text").GetComponent<TextMeshProUGUI>().text =
+                "To Main Menu";
+
+        StartCoroutine(SlidePanel(levelCompleted, levelCompletedY, animationDuration));
+    }
+
+    public void HideLevelCompletedScreen()
+    {
+        GameManager.instance.TogglePaused(false);
+        levelCompleted.position = new Vector3(levelCompleted.position.x, hiddenY);
+    }
+
     public void ShowTextPrompt(string msg)
     {
         textPrompt.text = msg;
@@ -200,9 +223,20 @@ public class UIHandler : MonoBehaviour
         StartCoroutine(SlidePanel(controlsInfo, hiddenY, animationDuration));
     }
 
+    public void NextLevelBtnClick()
+    {
+        if (GameManager.instance.Level < 3)
+            StartCoroutine(GameManager.instance.LoadNextLevel());
+        else
+        {
+            AudioSystem.instance.PlayMusicForLevel(1);
+            SceneManager.LoadScene("MainMenu");
+        }
+    }
+
     // // COROUTINES // //
 
-    IEnumerator SlidePanel(Transform panel, float targetYPos, float duration)
+    public IEnumerator SlidePanel(Transform panel, float targetYPos, float duration)
     {
         // Wait for any panels to finish moving
         while (isPanelMoving) yield return null;

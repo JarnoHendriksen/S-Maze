@@ -100,9 +100,17 @@ public class PlayerController : MonoBehaviour
         else if (collision.CompareTag("exit"))
         {
             // If all puzzles completed: pause game & trigger level completed screen
-            // Log that next level was entered
-            // Else: Show prompt to complete all levels
-            UIHandler.instance.ShowTextPrompt("You need to complete all puzzles before you can leave!");
+            if (GameManager.instance.LevelCompleted)
+            {
+                UIHandler.instance.ShowLevelCompletedScreen();
+
+                // Log that next level was entered
+                DataCollector.Instance.LevelUp(GameManager.instance.Level);
+            }
+            else
+            {
+                UIHandler.instance.ShowTextPrompt("You need to complete all puzzles before you can leave!");
+            }  
         }
     }
 

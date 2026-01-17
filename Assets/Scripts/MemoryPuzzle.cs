@@ -33,6 +33,13 @@ public class MemoryPuzzle : MonoBehaviour
     private int inputIndex = 0;
     private AudioSource audioSource;
 
+    List<QuizQuestion> quizQuestions;
+
+    private void Awake()
+    {
+        quizQuestions = new();
+    }
+
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -51,7 +58,7 @@ public class MemoryPuzzle : MonoBehaviour
         isSolved = false;
     }
 
-    public void InitPuzzle(int mode, int length)
+    public void InitPuzzle(int mode, int length, int quizQuestionCount = 1)
     {
         if (overrideSettings)
         {
@@ -63,6 +70,8 @@ public class MemoryPuzzle : MonoBehaviour
             puzzleMode = mode;
             sequenceLength = length;
         }
+
+        quizQuestions = GameManager.instance.GetQuizQuestions(quizQuestionCount);
     }
 
     public void StartPuzzleGame()
@@ -193,10 +202,12 @@ public class MemoryPuzzle : MonoBehaviour
             statusText.color = Color.green;
         }
 
-        if (UIHandler.instance != null)
-        {
-            UIHandler.instance.PuzzleCompleted();
-            UIHandler.instance.ShowTextPrompt("Secret Note Found!");
-        }
+        QuizHandler.instance.RunQuiz(quizQuestions);
+
+        //if (UIHandler.instance != null)
+        //{
+        //    UIHandler.instance.PuzzleCompleted();
+        //    UIHandler.instance.ShowTextPrompt("Secret Note Found!");
+        //}
     }
 }

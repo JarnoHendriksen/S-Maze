@@ -1,7 +1,8 @@
-using NUnit.Framework;
+//using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +13,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] int level;
 
     [SerializeField] public List<Item> items;
+
+    [SerializeField] List<QuizQuestion> questions;
+
+    List<QuizQuestion> undistributedQuestions;
+
+    int puzzlesCompleted = 0;
+    int puzzlesInLevel = 0;
 
     public int Level
     {
@@ -38,12 +46,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public bool LevelCompleted { get; private set; }
+
     bool isPaused;
 
     private void Awake()
     {
         if (instance == null) instance = this;
         else Destroy(gameObject);
+
+        undistributedQuestions = new();
+
+        foreach (var q in questions)
+        {
+            q.answers = new string[4]{ q.answer1, q.answer2, q.answer3, q.answer4};
+            undistributedQuestions.Add(q);
+        }
+
+        LevelCompleted = false;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -68,10 +88,24 @@ public class GameManager : MonoBehaviour
         if (togglePausePanel) UIHandler.instance.TogglePause();
     }
 
+    public void PuzzleCompleted()
+    {
+        UIHandler.instance.ShowTextPrompt("Puzzle Completed!");
+        AudioSystem.instance.PlaySoundEffect(SoundEffectType.PuzzleCompleted);
+        UIHandler.instance.PuzzleCompleted();
+        puzzlesCompleted++;
+
+        if (puzzlesCompleted == puzzlesInLevel)
+        {
+            LevelCompleted = true;
+        }
+    }
+
     public IEnumerator LoadNextLevel()
     {
         // Hide game by sliding black screen over it
         UIHandler.instance.HideScreen();
+        UIHandler.instance.HideLevelCompletedScreen();
 
         float waitTime = 1.0f;
 
@@ -85,17 +119,54 @@ public class GameManager : MonoBehaviour
         // Build next maze
         yield return MazeBuilder.instance.GenerateMaze(Level);
 
+        puzzlesInLevel = MazeBuilder.instance.RoomCount;
+
         // Reset UI elements
         UIHandler.instance.ResetUI();
         UIHandler.instance.SetLevel(Level);
-        UIHandler.instance.SetPuzzleCount(MazeBuilder.instance.QuestCount); // TODO: attach quests to rooms instead of mazebuilder
+        UIHandler.instance.SetPuzzleCount(puzzlesInLevel);
 
         // Slide black screen out of view
         UIHandler.instance.ShowScreen();
 
+        LevelCompleted = false;
+
         yield return null;
     }
+    public List<QuizQuestion> GetQuizQuestions(int count)
+    {
+        if (undistributedQuestions.Count < count)
+        {
+            int missing = count - undistributedQuestions.Count;
+            Debug.LogWarning($"Not enough questions declared! Reusing {missing} questions.");
+
+            HashSet<int> randIdx = new();
+
+            while(randIdx.Count < missing)
+            {
+                randIdx.Add(Random.Range(0, questions.Count));
+            }
+
+            List<QuizQuestion> randQs = new();
+
+            foreach (int i in randIdx)
+            {
+                randQs.Add(questions[i]);
+            }
+
+            randQs.Concat(undistributedQuestions).ToList();
+
+            return randQs;
+        }
+
+        List<QuizQuestion> qs = undistributedQuestions.Take(count).ToList();
+        undistributedQuestions.RemoveRange(0, qs.Count);
+
+        return qs;
+    }
 }
+
+
 
 [System.Serializable]
 public class Item
@@ -104,4 +175,18 @@ public class Item
     public ItemType type;
     public Sprite sprite;
     public string value;
+}
+
+[System.Serializable]
+public class QuizQuestion
+{
+    public string question;
+    [Tooltip("Index of the correct answer (0-3)")]
+    [Range(0, 3)] public int correctAnswer;
+    public string answer1;
+    public string answer2;
+    public string answer3;
+    public string answer4;
+
+    [HideInInspector] public string[] answers;
 }

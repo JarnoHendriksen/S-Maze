@@ -42,9 +42,10 @@ public class MazeBuilder : MonoBehaviour
     [SerializeField] Transform player;
     [SerializeField] Texture2D mazeLayout;
     [SerializeField] List<Quest> quests;
-    [SerializeField] List<RoomPrefab> roomPrefabs;
 
     List<Room> rooms;
+
+    public int RoomCount { get; private set; }
 
     public int QuestCount { get; private set; }
     private List<GameObject> spawnedRooms = new List<GameObject>(); // List to track rooms
@@ -304,7 +305,7 @@ public class MazeBuilder : MonoBehaviour
             MemoryPuzzle mpScript = puzzle.GetComponent<MemoryPuzzle>();
             if (mpScript != null)
             {
-                mpScript.InitPuzzle(type, length);
+                mpScript.InitPuzzle(type, length, GameManager.instance.Level + 1);
             }
         }
     }
@@ -374,6 +375,8 @@ public class MazeBuilder : MonoBehaviour
         newRoom.transform.SetParent(floorObjects);
 
         spawnedRooms.Add(newRoom);
+
+        RoomCount++;
 
         return true;
     }
@@ -455,6 +458,8 @@ public class MazeBuilder : MonoBehaviour
                 Destroy(transform.GetChild(i).gameObject);
         }
         rooms.Clear();
+
+        spawnedRooms.Clear();
     }
 
     public static (byte, byte, byte) ToRGB255(Color c)

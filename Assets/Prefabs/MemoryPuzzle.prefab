@@ -971,10 +971,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8547741204490f548aee015abd9e7d8c, type: 3}
   successSound: {fileID: 0}
   errorSound: {fileID: 0}
-  difficultyLevel: 3
-  overrideLevel: 0
-  debugLevel: 1
-  currentLevel: 1
+  sequenceLength: 3
+  puzzleMode: 1
+  overrideSettings: 0
+  debugMode: 1
+  debugLength: 3
   canInteract: 0
   isGameActive: 0
   isSolved: 0
