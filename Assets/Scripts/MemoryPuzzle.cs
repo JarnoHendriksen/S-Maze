@@ -35,6 +35,10 @@ public class MemoryPuzzle : MonoBehaviour
 
     List<QuizQuestion> quizQuestions;
 
+    Color defaultColor = new Color(1f, 0.8f, 0f);
+    Color wrongColor = new Color(1f, 1f, 1f);
+    Color correctColor = Color.green;
+
     private void Awake()
     {
         quizQuestions = new();
@@ -202,12 +206,24 @@ public class MemoryPuzzle : MonoBehaviour
             statusText.color = Color.green;
         }
 
-        QuizHandler.instance.RunQuiz(quizQuestions);
+        QuizHandler.instance.RunQuiz(this, quizQuestions);
 
         //if (UIHandler.instance != null)
         //{
         //    UIHandler.instance.PuzzleCompleted();
         //    UIHandler.instance.ShowTextPrompt("Secret Note Found!");
         //}
+    }
+
+    public void ResetPuzzle()
+    {
+        // Reset text
+        statusText.text = "";
+        statusText.color = defaultColor;
+
+        // Reset state
+        canInteract = true;
+        isGameActive = false;
+        isSolved = false;
     }
 }

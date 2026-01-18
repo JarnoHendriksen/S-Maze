@@ -25,6 +25,7 @@ public class UIHandler : MonoBehaviour
     [SerializeField] Transform settingsMenu;
     [SerializeField] Transform controlsInfo;
     [SerializeField] Transform levelCompleted;
+    [SerializeField] Transform quizPanel;
 
     [Header("")]
     [SerializeField] float animationDuration;
@@ -38,6 +39,9 @@ public class UIHandler : MonoBehaviour
     bool isPanelMoving = false;
     bool isPausePanelOpen = false;
     bool isSettingsOpen = false;
+    bool isControlsPanelOpen = true;
+    bool isQuizPanelOpen = false;
+    bool isLevelCompletedPanelOpen = false;
     bool isBlackScreenVisible = true;
     bool isTransitioning = false;
     bool isTextPromptVisible = false;
@@ -130,9 +134,43 @@ public class UIHandler : MonoBehaviour
         }
     }
 
+    public void SetPause(bool pauseGame)
+    {
+        if (!isPausePanelOpen && pauseGame)
+        {
+            StartCoroutine(SlidePanel(gamePaused, pausePanelY, animationDuration));
+        }
+        else if (isPausePanelOpen && !pauseGame)
+        {
+            StartCoroutine(SlidePanel(gamePaused, hiddenY, animationDuration));
+        }
+
+        isPausePanelOpen = pauseGame;
+    }
+
+    public void ShowQuizPanel()
+    {
+        if (isQuizPanelOpen) return;
+
+        isQuizPanelOpen = true;
+        GameManager.instance.SetPaused(true);
+
+        StartCoroutine(UIHandler.instance.SlidePanel(quizPanel, settingsPanelY, animationDuration));
+    }
+
+    public void HideQuizPanel()
+    {
+        if (!isQuizPanelOpen) return;
+
+        isQuizPanelOpen = false;
+        GameManager.instance.SetPaused(false);
+
+        StartCoroutine(UIHandler.instance.SlidePanel(quizPanel, hiddenY, animationDuration));
+    }
+
     public void ShowLevelCompletedScreen()
     {
-        GameManager.instance.TogglePaused(false);
+        GameManager.instance.SetPaused(true);
 
         if (GameManager.instance.Level < 3)
             levelCompleted.Find("NextLevelBtn/Text").GetComponent<TextMeshProUGUI>().text =
@@ -146,7 +184,7 @@ public class UIHandler : MonoBehaviour
 
     public void HideLevelCompletedScreen()
     {
-        GameManager.instance.TogglePaused(false);
+        GameManager.instance.SetPaused(false);
         levelCompleted.position = new Vector3(levelCompleted.position.x, hiddenY);
     }
 
@@ -187,7 +225,13 @@ public class UIHandler : MonoBehaviour
 
     public void PauseBtnClick(bool playSound = true)
     {
-        if (isSettingsOpen) return; // Pause already controlled by settings menu
+        // Don't interact with the pause button if any panel is already pausing the game 
+        if (isSettingsOpen 
+            || isBlackScreenVisible 
+            || isControlsPanelOpen 
+            || isQuizPanelOpen 
+            || isLevelCompletedPanelOpen)
+            return;
 
         if (playSound) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
 
@@ -217,10 +261,12 @@ public class UIHandler : MonoBehaviour
 
     public void ControlsPanelBtnClick(bool playSound = true)
     {
-        //if (playSound) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
-        GameManager.instance.TogglePaused(false);
+        if (playSound) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
+        GameManager.instance.SetPaused(false);
 
         StartCoroutine(SlidePanel(controlsInfo, hiddenY, animationDuration));
+
+        isControlsPanelOpen = false;
     }
 
     public void NextLevelBtnClick()

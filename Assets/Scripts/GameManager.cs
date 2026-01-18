@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LoadNextLevel());
 
         // Start game paused, since control menu is showing
-        TogglePaused(false);
+        SetPaused(true);
     }
 
     public void TogglePaused(bool togglePausePanel = true) // don't toggle pause panel when showing settings
@@ -86,6 +86,13 @@ public class GameManager : MonoBehaviour
         GamePaused = !GamePaused;
 
         if (togglePausePanel) UIHandler.instance.TogglePause();
+    }
+
+    public void SetPaused(bool pauseGame, bool togglePausePanel = false)
+    {
+        GamePaused = pauseGame;
+
+        if (togglePausePanel) UIHandler.instance.SetPause(pauseGame);
     }
 
     public void PuzzleCompleted()

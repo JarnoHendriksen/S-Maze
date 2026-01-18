@@ -15,6 +15,8 @@ public class QuizHandler : MonoBehaviour
 
     QuizQuestion currentQuestion;
 
+    MemoryPuzzle attachedPuzzle;
+
     int maxQCount = 5;
 
     int points = 0;
@@ -41,8 +43,10 @@ public class QuizHandler : MonoBehaviour
         
     }
 
-    public void RunQuiz(List<QuizQuestion> qs)
+    public void RunQuiz(MemoryPuzzle puzzle, List<QuizQuestion> qs)
     {
+        attachedPuzzle = puzzle;
+
         foreach (var q in qs)
             pendingQuestions.Enqueue(q);
 
@@ -93,6 +97,7 @@ public class QuizHandler : MonoBehaviour
             {
                 UIHandler.instance.ShowTextPrompt("You need to answer all questions correctly to complete the puzzle!");
                 AudioSystem.instance.PlaySoundEffect(SoundEffectType.InvalidAction);
+                attachedPuzzle.ResetPuzzle();
             }
         }
         
