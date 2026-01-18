@@ -1715,10 +1715,6 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 67e9bc3f7cfa1ea46a0201b3264d6299, type: 3}
   - type: 4
     clip: {fileID: 8300000, guid: e04db91bdbcb3b84d872dbef8e860cd9, type: 3}
-  - type: 4
-    clip: {fileID: 8300000, guid: e04db91bdbcb3b84d872dbef8e860cd9, type: 3}
-  - type: 5
-    clip: {fileID: 8300000, guid: 8b35fca1fc92c4049aac496366b89934, type: 3}
   - type: 5
     clip: {fileID: 8300000, guid: 8b35fca1fc92c4049aac496366b89934, type: 3}
 --- !u!4 &1659647855

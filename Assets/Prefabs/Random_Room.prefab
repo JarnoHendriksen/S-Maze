@@ -51,8 +51,8 @@ MonoBehaviour:
   - {fileID: 6837083971793497517, guid: 0cf4fdb929918eb43818f2e2d5bbb7df, type: 3}
   numberOfItemsToSpawn: 10
   minSpawnDistance: 1.5
-  spawnAreaSize: {x: 9, y: 4}
-  centerOffset: {x: 5.5, y: 3, z: -0.1}
+  spawnAreaSize: {x: 8, y: 4}
+  centerOffset: {x: 5.5, y: 4, z: -0.1}
 --- !u!1 &6819669459487624691
 GameObject:
   m_ObjectHideFlags: 0

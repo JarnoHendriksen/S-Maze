@@ -61,7 +61,7 @@ public class QuizHandler : MonoBehaviour
 
         // Show the quiz panel
         StartCoroutine(UIHandler.instance.SlidePanel(transform, 200, 0.5f));
-
+        // UIHandler.instance.ShowQuizPanel();
         
     }
 

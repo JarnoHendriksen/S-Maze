@@ -124,25 +124,25 @@ public class MazeBuilder : MonoBehaviour
             default: yield break;
         }
 
-        List<Item> allRequiredItems = new();
+        //List<Item> allRequiredItems = new();
 
-        foreach (var q in quests)
-        {
-            foreach (var id in q.requiredItemIds)
-            {
-                Item item = GameManager.instance.items.Find(x => x.id.Equals(id));
-                allRequiredItems.Add(item);
-            }
-        }
+        //foreach (var q in quests)
+        //{
+        //    foreach (var id in q.requiredItemIds)
+        //    {
+        //        Item item = GameManager.instance.items.Find(x => x.id.Equals(id));
+        //        allRequiredItems.Add(item);
+        //    }
+        //}
 
-        for (int i = 0; i < allRequiredItems.Count / 10 + 1; i++)
-        {
-            int idx = UnityEngine.Random.Range(0, GameManager.instance.items.Count);
-            allRequiredItems.Add(GameManager.instance.items[idx]);
-        }
+        //for (int i = 0; i < allRequiredItems.Count / 10 + 1; i++)
+        //{
+        //    int idx = UnityEngine.Random.Range(0, GameManager.instance.items.Count);
+        //    allRequiredItems.Add(GameManager.instance.items[idx]);
+        //}
 
-        PopulateItemPlaceholders(allRequiredItems);
-        RemoveUnusedPlaceholders();
+        //PopulateItemPlaceholders(allRequiredItems);
+        //RemoveUnusedPlaceholders();
 
         // Combine colliders of child objects
         fakeWallObjects.GetComponent<CompositeCollider2D>().GenerateGeometry();
@@ -235,7 +235,7 @@ public class MazeBuilder : MonoBehaviour
                 (ParseFunc parser, ColorConstraints cc)[] parsers =
                 { 
                     (ParsePlayer, playerColor), (ParseDoor, doorColor),
-                    (ParseObject, objectColor), (ParseHiddenPath, hiddenPathColor),
+                    /*(ParseObject, objectColor),*/ (ParseHiddenPath, hiddenPathColor),
                     (ParseRoom, roomColor), (ParseExit, exitColor)
                 };
 
