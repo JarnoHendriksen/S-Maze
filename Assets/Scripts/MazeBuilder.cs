@@ -390,6 +390,8 @@ public class MazeBuilder : MonoBehaviour
 
         exit.SetParent(doorObjects);
 
+        exit.eulerAngles = new Vector3(0, 0, 90);
+
         exit.name = $"Exit_{pixel.position.x}_{pixel.position.y}";
 
         return true;

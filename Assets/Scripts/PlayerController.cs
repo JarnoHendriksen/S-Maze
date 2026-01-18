@@ -36,9 +36,7 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            UIHandler.instance.PuzzleCompleted();
-            UIHandler.instance.ShowTextPrompt("Puzzle Completed!");
-            AudioSystem.instance.PlaySoundEffect(SoundEffectType.PuzzleCompleted);
+            GameManager.instance.PuzzleCompleted();
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -101,6 +99,7 @@ public class PlayerController : MonoBehaviour
             // If all puzzles completed: pause game & trigger level completed screen
             if (GameManager.instance.LevelCompleted)
             {
+                AudioSystem.instance.PlaySoundEffect(SoundEffectType.MazeCompleted);
                 UIHandler.instance.ShowLevelCompletedScreen();
 
                 // Log that next level was entered
@@ -108,6 +107,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                AudioSystem.instance.PlaySoundEffect(SoundEffectType.InvalidAction);
                 UIHandler.instance.ShowTextPrompt("You need to complete all puzzles before you can leave!");
             }  
         }
