@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] int level;
 
+    [SerializeField] Minimap minimap;
+
     [SerializeField] public List<Item> items;
 
     [SerializeField] List<QuizQuestion> questions;
@@ -132,6 +134,8 @@ public class GameManager : MonoBehaviour
         UIHandler.instance.ResetUI();
         UIHandler.instance.SetLevel(Level);
         UIHandler.instance.SetPuzzleCount(puzzlesInLevel);
+
+        minimap.SetLevel(Level);
 
         // Slide black screen out of view
         UIHandler.instance.ShowScreen();

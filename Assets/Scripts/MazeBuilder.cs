@@ -536,6 +536,11 @@ public class ColorConstraints
         green = new ExactColor(g);
         blue = new ExactColor(b);
     }
+
+    public bool AreValid((byte r, byte g, byte b) c)
+    {
+        return red.IsValid(c.r) && green.IsValid(c.g) && blue.IsValid(c.b);
+    }
 }
 
 public abstract class IColorConstraint
