@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.UIElements.Experimental;
 
 public class UIHandler : MonoBehaviour
 {
@@ -22,24 +21,21 @@ public class UIHandler : MonoBehaviour
 
     [Header("Menu Panels")]
     [SerializeField] Transform gamePaused;
-    [SerializeField] Transform settingsMenu;
     [SerializeField] Transform controlsInfo;
     [SerializeField] Transform levelCompleted;
     [SerializeField] Transform quizPanel;
 
-    [Header("")]
-    [SerializeField] float animationDuration;
+    [Header("Settings")]
+    [SerializeField] float animationDuration = 0.5f;
 
+    float panelActiveY = 200;
     float pausePanelY = 780;
-    float settingsPanelY = 200;
-    float controlsPanelY = 200;
     float levelCompletedY = 300;
-    float hiddenY = 1100;
+    float hiddenY = 2500; // Increased to ensure it's off-screen
 
     bool isPanelMoving = false;
     bool isPausePanelOpen = false;
-    bool isSettingsOpen = false;
-    bool isControlsPanelOpen = true;
+    bool isControlsPanelOpen = true; // Starts open
     bool isQuizPanelOpen = false;
     bool isLevelCompletedPanelOpen = false;
     bool isBlackScreenVisible = true;
@@ -48,25 +44,40 @@ public class UIHandler : MonoBehaviour
 
     int puzzleCount = 0;
     int puzzlesCompleted = 0;
-
     int[] puzzleSymbols;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         if (instance == null) instance = this;
         else Destroy(gameObject);
     }
 
-    private void Start()
-    {
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        //if (isBlackScreenVisible && !isTransitioning) ShowScreen(1.0f);
+        // PRESS ESC: Toggle the Initial Tutorial / Controls Menu
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ToggleControlsMenu();
+        }
     }
+
+    public void ToggleControlsMenu()
+    {
+        if (isPanelMoving) return;
+
+        if (isControlsPanelOpen)
+        {
+            ControlsPanelBtnClick(true);
+        }
+        else
+        {
+            GameManager.instance.SetPaused(true);
+            StartCoroutine(SlidePanel(controlsInfo, panelActiveY, animationDuration));
+            isControlsPanelOpen = true;
+        }
+    }
+
+    // // PANEL MANAGEMENT // //
 
     public void SetLevel(int lvl)
     {
@@ -78,7 +89,7 @@ public class UIHandler : MonoBehaviour
         puzzleCount = count;
         puzzleSymbols = new int[count];
 
-        for (int i = 0;  i < puzzleCount; i++)
+        for (int i = 0; i < puzzleCount; i++)
         {
             Transform newSymbol = Instantiate(puzzlePending);
             newSymbol.SetParent(progressContainer);
@@ -90,33 +101,24 @@ public class UIHandler : MonoBehaviour
 
     public void PuzzleCompleted()
     {
-        if (puzzlesCompleted <  puzzleCount)
+        if (puzzlesCompleted < puzzleCount)
         {
-            // Delete all children of the progress bar
             for (int i = progressContainer.childCount - 1; i >= 0; i--)
             {
                 Destroy(progressContainer.GetChild(i).gameObject);
             }
 
-            // Replace symbol in array
             puzzleSymbols[puzzlesCompleted] = 1;
             puzzlesCompleted++;
 
-            // Rebuild progress bar with updated array
             for (int i = 0; i < puzzleCount; i++)
             {
                 Transform symbol;
-                if (puzzleSymbols[i] == 0)
-                    symbol = Instantiate(puzzlePending);
-                else
-                    symbol = Instantiate(puzzleCompleted);
+                if (puzzleSymbols[i] == 0) symbol = Instantiate(puzzlePending);
+                else symbol = Instantiate(puzzleCompleted);
 
                 symbol.SetParent(progressContainer);
             }
-        }
-        else
-        {
-            Debug.LogWarning("No more puzzles to complete!");
         }
     }
 
@@ -137,13 +139,9 @@ public class UIHandler : MonoBehaviour
     public void SetPause(bool pauseGame)
     {
         if (!isPausePanelOpen && pauseGame)
-        {
             StartCoroutine(SlidePanel(gamePaused, pausePanelY, animationDuration));
-        }
         else if (isPausePanelOpen && !pauseGame)
-        {
             StartCoroutine(SlidePanel(gamePaused, hiddenY, animationDuration));
-        }
 
         isPausePanelOpen = pauseGame;
     }
@@ -151,20 +149,16 @@ public class UIHandler : MonoBehaviour
     public void ShowQuizPanel()
     {
         if (isQuizPanelOpen) return;
-
         isQuizPanelOpen = true;
         GameManager.instance.SetPaused(true);
-
-        StartCoroutine(UIHandler.instance.SlidePanel(quizPanel, settingsPanelY, animationDuration));
+        StartCoroutine(UIHandler.instance.SlidePanel(quizPanel, panelActiveY, animationDuration));
     }
 
     public void HideQuizPanel()
     {
         if (!isQuizPanelOpen) return;
-
         isQuizPanelOpen = false;
         GameManager.instance.SetPaused(false);
-
         StartCoroutine(UIHandler.instance.SlidePanel(quizPanel, hiddenY, animationDuration));
     }
 
@@ -173,11 +167,9 @@ public class UIHandler : MonoBehaviour
         GameManager.instance.SetPaused(true);
 
         if (GameManager.instance.Level < 3)
-            levelCompleted.Find("NextLevelBtn/Text").GetComponent<TextMeshProUGUI>().text =
-                "To Level " + GameManager.instance.Level + 1;
+            levelCompleted.Find("NextLevelBtn/Text").GetComponent<TextMeshProUGUI>().text = "To Level " + (GameManager.instance.Level + 1);
         else
-            levelCompleted.Find("NextLevelBtn/Text").GetComponent<TextMeshProUGUI>().text =
-                "To Main Menu";
+            levelCompleted.Find("NextLevelBtn/Text").GetComponent<TextMeshProUGUI>().text = "To Main Menu";
 
         StartCoroutine(SlidePanel(levelCompleted, levelCompletedY, animationDuration));
     }
@@ -192,21 +184,19 @@ public class UIHandler : MonoBehaviour
     {
         textPrompt.text = msg;
         textPromptContainer.gameObject.SetActive(true);
-        float visibleTime = msg.Split(' ').Length / 3.333f; // Assuming a reading speed of 200 WPM / 3.33.. WPS
+        float visibleTime = msg.Split(' ').Length / 3.333f;
         StartCoroutine(ShowPrompt(animationDuration, visibleTime));
     }
 
     public void ShowScreen(float waitTime = 0.0f)
     {
         if (!isBlackScreenVisible) return;
-
         StartCoroutine(FadeBlack(animationDuration, waitTime, false));
     }
 
     public void HideScreen()
     {
         if (isBlackScreenVisible) return;
-
         StartCoroutine(FadeBlack(animationDuration));
     }
 
@@ -214,8 +204,7 @@ public class UIHandler : MonoBehaviour
     {
         puzzleCount = 0;
         puzzleSymbols = null;
-
-        for ( int i = progressContainer.childCount - 1; i >= 0; i--)
+        for (int i = progressContainer.childCount - 1; i >= 0; i--)
         {
             Destroy(progressContainer.GetChild(i).gameObject);
         }
@@ -225,11 +214,9 @@ public class UIHandler : MonoBehaviour
 
     public void PauseBtnClick(bool playSound = true)
     {
-        // Don't interact with the pause button if any panel is already pausing the game 
-        if (isSettingsOpen 
-            || isBlackScreenVisible 
-            || isControlsPanelOpen 
-            || isQuizPanelOpen 
+        if (isBlackScreenVisible
+            || isControlsPanelOpen
+            || isQuizPanelOpen
             || isLevelCompletedPanelOpen)
             return;
 
@@ -238,37 +225,30 @@ public class UIHandler : MonoBehaviour
         GameManager.instance.TogglePaused();
     }
 
-    public void SettingsBtnClick(bool playSound = true)
-    {
-        if (playSound) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
-
-        // Don't unpause if already paused when clicking settings and vice versa
-        if ((!GameManager.instance.GamePaused && !isSettingsOpen)
-            || (GameManager.instance.GamePaused && isSettingsOpen)) GameManager.instance.TogglePaused(false);
-
-        if (isSettingsOpen)
-        {
-            StartCoroutine(SlidePanel(settingsMenu, hiddenY, animationDuration));
-            isSettingsOpen = false;
-        }
-        else
-        {
-            if (isPausePanelOpen) TogglePause(); // Move pause panel away before showing settings
-            StartCoroutine(SlidePanel(settingsMenu, settingsPanelY, animationDuration));
-            isSettingsOpen = true;
-        }
-    }
+    // REMOVED: SettingsBtnClick()
 
     public void ControlsPanelBtnClick(bool playSound = true)
     {
-        if (playSound) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
-        GameManager.instance.SetPaused(false);
+        if (playSound && AudioSystem.instance != null)
+        {
+            AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
+        }
 
-        StartCoroutine(SlidePanel(controlsInfo, hiddenY, animationDuration));
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.SetPaused(false);
+        }
 
-        isControlsPanelOpen = false;
+        if (controlsInfo != null)
+        {
+            StartCoroutine(SlidePanel(controlsInfo, hiddenY, animationDuration));
+            isControlsPanelOpen = false;
+        }
+        else
+        {
+            Debug.LogError("UIHandler Error: 'Controls Info' is missing! Drag the panel into the UIHandler slot in the Inspector.");
+        }
     }
-
     public void NextLevelBtnClick()
     {
         if (GameManager.instance.Level < 3)
@@ -284,41 +264,44 @@ public class UIHandler : MonoBehaviour
 
     public IEnumerator SlidePanel(Transform panel, float targetYPos, float duration)
     {
-        // Wait for any panels to finish moving
+        // Wait for previous move to finish
         while (isPanelMoving) yield return null;
 
         isPanelMoving = true;
         float currentTime = 0;
 
-        Vector3 targetPos = new Vector3(panel.position.x, targetYPos, panel.position.z);
+        // Capture Start Position BEFORE loop
+        Vector3 startPos = panel.position;
+        Vector3 targetPos = new Vector3(startPos.x, targetYPos, startPos.z);
 
         while (currentTime < duration)
         {
-            panel.position = Vector3.Lerp(panel.position, targetPos, currentTime);
-            currentTime += Time.unscaledDeltaTime; // Time.deltaTime won't work if Time.timeScale = 0 when game is paused
+            // Use percentage (t) for smooth Lerp
+            float t = currentTime / duration;
+            t = Mathf.Sin(t * Mathf.PI * 0.5f);
+
+            panel.position = Vector3.Lerp(startPos, targetPos, t);
+
+            currentTime += Time.unscaledDeltaTime;
             yield return null;
         }
 
         panel.position = targetPos;
-
         isPanelMoving = false;
-        yield return null;
     }
 
     IEnumerator FadeBlack(float fadeTime, float waitTime = 0.0f, bool toBlack = true)
     {
         isTransitioning = true;
-
         float currentTime = 0.0f;
 
-        while(currentTime < waitTime)
+        while (currentTime < waitTime)
         {
             currentTime += Time.deltaTime;
             yield return null;
         }
 
         currentTime = 0;
-
         if (toBlack) blackScreen.gameObject.SetActive(true);
 
         while (currentTime < fadeTime)
@@ -330,7 +313,6 @@ public class UIHandler : MonoBehaviour
             blackScreen.GetComponent<Image>().color = new Color(c.r, c.g, c.b, toBlack ? fade_t : 1.0f - fade_t);
 
             currentTime += Time.deltaTime;
-
             yield return null;
         }
 
@@ -341,63 +323,46 @@ public class UIHandler : MonoBehaviour
 
         isTransitioning = false;
         isBlackScreenVisible = toBlack;
-
-        yield return null;
     }
 
     IEnumerator ShowPrompt(float animTime, float visibleTime)
     {
-        // Wait for last prompt to finish
         while (isTextPromptVisible) yield return null;
-
         isTextPromptVisible = true;
 
         Vector3 visiblePos = new Vector3(460, 150);
         Vector3 hiddenPos = new Vector3(460, -150);
-
         float currentTime = 0;
 
-        // Slide + fade in text prompt
-        while(currentTime < animTime)
+        while (currentTime < animTime)
         {
             float t = currentTime / animTime;
             float eased_t = MenuAnimationController.Easing(EasingFunc.EaseInOutQuad, t);
             textPrompt.transform.position = Vector3.Lerp(hiddenPos, visiblePos, eased_t);
             textPromptContainer.GetComponent<CanvasGroup>().alpha = eased_t;
-
             currentTime += Time.deltaTime;
-
             yield return null;
         }
 
         textPrompt.transform.position = visiblePos;
         textPromptContainer.GetComponent<CanvasGroup>().alpha = 1.0f;
 
-        // wait for visibleTime seconds
         yield return new WaitForSeconds(visibleTime);
 
-        // Slide and fade out text prompt
         currentTime = 0;
-
         while (currentTime < animTime)
         {
             float t = currentTime / animTime;
             float eased_t = MenuAnimationController.Easing(EasingFunc.EaseInOutQuad, t);
             textPrompt.transform.position = Vector3.Lerp(visiblePos, hiddenPos, eased_t);
             textPromptContainer.GetComponent<CanvasGroup>().alpha = 1.0f - eased_t;
-
             currentTime += Time.deltaTime;
-
             yield return null;
         }
 
         textPrompt.transform.position = hiddenPos;
         textPromptContainer.GetComponent<CanvasGroup>().alpha = 0.0f;
-
         textPromptContainer.gameObject.SetActive(false);
-
         isTextPromptVisible = false;
-
-        yield return null;
     }
 }
