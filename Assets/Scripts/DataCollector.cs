@@ -15,6 +15,7 @@ public class DataCollector : MonoBehaviour
 
     private float sessionStartTime;
     private int currentLevel = 1;
+    private int attempts = 0;
     private Dictionary<string, string> itemsCollector = new();
 
     private List<DataInfo> SessionData = new();
@@ -37,6 +38,12 @@ public class DataCollector : MonoBehaviour
     {
         if (!isLoggingEnabled) return;
         itemsCollector.Add((Time.time - sessionStartTime).ToString("F2"), (item.type.ToString() + " " + item.value));
+    }
+
+    public void LogQuizAttempt()
+    {
+        if (!isLoggingEnabled) return;
+        attempts++;
     }
 
     public void LevelUp(int levelCompleted)
@@ -65,7 +72,8 @@ public class DataCollector : MonoBehaviour
         {
             timeLevel = TotalTime,
             numberLevel = currentLevel,
-            itemsCollected = new Dictionary<string, string>(itemsCollector)
+            itemsCollected = new Dictionary<string, string>(itemsCollector),
+            attempts = attempts
         };
         SessionData.Add(data);
 
@@ -103,7 +111,8 @@ public class DataCollector : MonoBehaviour
                   $"Level: {entry.numberLevel} | " +
                   $"Time: {entry.timeLevel.ToString("F2")}s | " +
                   $"Items: {entry.itemsCollected.Count} | " +
-                  $"Details: {(entry.itemsCollected.Count > 0 ? collectedItemsString : "None")}";
+                  $"Details: {(entry.itemsCollected.Count > 0 ? collectedItemsString : "None")} | " +
+                  $"Quiz Attempts: {entry.attempts}";
             writer.WriteLine(LogEntry);
         }
     }
@@ -113,6 +122,7 @@ public class DataCollector : MonoBehaviour
     {
         public float timeLevel;
         public int numberLevel;
+        public int attempts;
         public Dictionary<string, string> itemsCollected;
     }
 }
