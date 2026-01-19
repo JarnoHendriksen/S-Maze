@@ -40,7 +40,6 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            DataCollector.Instance.LevelUp(currentLevel);
             currentLevel++;
             StartCoroutine(GameManager.instance.LoadNextLevel());
         }

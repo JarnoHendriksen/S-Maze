@@ -74,6 +74,7 @@ public class QuizHandler : MonoBehaviour
         correctAnswer = correctAnswer.Trim().ToLower();
 
         Debug.Log($"Correct/Given Answer: {correctAnswer}/{givenAnswer}");
+        DataCollector.Instance.LogQuizAttempt();
 
         if (givenAnswer == correctAnswer)
         {
@@ -85,6 +86,7 @@ public class QuizHandler : MonoBehaviour
         {
             UIHandler.instance.ShowTextPrompt("Wrong Answer...");
             AudioSystem.instance.PlaySoundEffect(SoundEffectType.InvalidAction);
+            
         }
 
         if (pendingQuestions.Count <= 0)

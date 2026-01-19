@@ -112,6 +112,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator LoadNextLevel()
     {
+        DataCollector.Instance.LevelUp(Level);
         // Hide game by sliding black screen over it
         UIHandler.instance.HideScreen();
         UIHandler.instance.HideLevelCompletedScreen();
