@@ -38,7 +38,6 @@ Transform:
   - {fileID: 1569127842468321281}
   - {fileID: 7962645819366857692}
   - {fileID: 8364176107146724510}
-  - {fileID: 6057045048685535632}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6541326582053343246
@@ -60,12 +59,10 @@ MonoBehaviour:
   - {fileID: 8732314388684108053}
   - {fileID: 173600728893354696}
   - {fileID: 1799826887065333130}
-  - {fileID: 4100301783518349444}
   noteSounds:
   - {fileID: 8300000, guid: b091c155e35d8094cabaae5a8704fe79, type: 3}
   - {fileID: 8300000, guid: 2a0da7db9ff862d4e9d6c88f7b02e8fb, type: 3}
   - {fileID: 8300000, guid: a591f1381119ad5498575927c9c5a0a2, type: 3}
-  - {fileID: 8300000, guid: 291c18043b033804fa4f7e489c83ae6b, type: 3}
   - {fileID: 8300000, guid: 8547741204490f548aee015abd9e7d8c, type: 3}
   - {fileID: 8300000, guid: c722a4a7f62359d439314a64623c5584, type: 3}
   successSound: {fileID: 0}
@@ -347,7 +344,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 2.6, y: 1.5}
+  m_AnchoredPosition: {x: 2.1, y: 1.5}
   m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &8880537447153338803
@@ -561,87 +558,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   puzzleController: {fileID: 6541326582053343246}
---- !u!1001 &378120164464379966
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 5054507667835453266}
-    m_Modifications:
-    - target: {fileID: 372140523581131858, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: m_Name
-      value: Key_ (5)
-      objectReference: {fileID: 0}
-    - target: {fileID: 4456427237789188282, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: id
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4456427237789188282, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: puzzleController
-      value: 
-      objectReference: {fileID: 6541326582053343246}
-    - target: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 5.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
---- !u!114 &4100301783518349444 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4456427237789188282, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-  m_PrefabInstance: {fileID: 378120164464379966}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a0fb82a571ebf84082f187fca174a89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &6057045048685535632 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
-  m_PrefabInstance: {fileID: 378120164464379966}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2594225233195348075
 PrefabInstance:
   m_ObjectHideFlags: 0
