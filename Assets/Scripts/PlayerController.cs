@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(GameManager.instance.LoadNextLevel());
         }
 
+        rb.linearVelocity = Vector2.zero;
+
         if (GameManager.instance.GamePaused) return;
 
         float moveX = Input.GetAxisRaw("Horizontal");
@@ -81,13 +83,13 @@ public class PlayerController : MonoBehaviour
         {
             if (GameManager.instance.LevelCompleted)
             {
-                AudioSystem.instance.PlaySoundEffect(SoundEffectType.MazeCompleted);
+                if (AudioSystem.instance != null) AudioSystem.instance.PlaySoundEffect(SoundEffectType.MazeCompleted);
                 UIHandler.instance.ShowLevelCompletedScreen();
                 DataCollector.Instance.LevelUp(GameManager.instance.Level);
             }
             else
             {
-                AudioSystem.instance.PlaySoundEffect(SoundEffectType.InvalidAction);
+                if (AudioSystem.instance != null) AudioSystem.instance.PlaySoundEffect(SoundEffectType.InvalidAction);
                 UIHandler.instance.ShowTextPrompt("You need to complete all puzzles before you can leave!");
             }
         }

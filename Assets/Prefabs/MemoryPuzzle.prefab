@@ -570,6 +570,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Key_ (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3275092728941380854, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4456427237789188282, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
       propertyPath: id
       value: 1
@@ -578,6 +582,18 @@ PrefabInstance:
       propertyPath: puzzleController
       value: 
       objectReference: {fileID: 6541326582053343246}
+    - target: {fileID: 4484758107113673768, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4484758107113673768, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4484758107113673768, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5850642281056397742, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.05
@@ -650,6 +666,10 @@ PrefabInstance:
     - target: {fileID: 372140523581131858, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
       propertyPath: m_Name
       value: Key_ (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3275092728941380854, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4456427237789188282, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
       propertyPath: id
@@ -732,6 +752,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Key_ (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 3275092728941380854, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4456427237789188282, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
       propertyPath: id
       value: 3
@@ -813,6 +837,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Key_ (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 3275092728941380854, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4456427237789188282, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
       propertyPath: id
       value: 2
@@ -893,6 +921,10 @@ PrefabInstance:
     - target: {fileID: 372140523581131858, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
       propertyPath: m_Name
       value: Key_
+      objectReference: {fileID: 0}
+    - target: {fileID: 3275092728941380854, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4456427237789188282, guid: dd43dce589ead0f41abc7eb37ae09b25, type: 3}
       propertyPath: puzzleController

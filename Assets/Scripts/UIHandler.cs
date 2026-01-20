@@ -204,6 +204,7 @@ public class UIHandler : MonoBehaviour
     {
         puzzleCount = 0;
         puzzleSymbols = null;
+        puzzlesCompleted = 0;
         for (int i = progressContainer.childCount - 1; i >= 0; i--)
         {
             Destroy(progressContainer.GetChild(i).gameObject);
@@ -220,7 +221,7 @@ public class UIHandler : MonoBehaviour
             || isLevelCompletedPanelOpen)
             return;
 
-        if (playSound) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
+        if (playSound && AudioSystem.instance != null) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
 
         GameManager.instance.TogglePaused();
     }
@@ -255,7 +256,7 @@ public class UIHandler : MonoBehaviour
             StartCoroutine(GameManager.instance.LoadNextLevel());
         else
         {
-            AudioSystem.instance.PlayMusicForLevel(1);
+            if (AudioSystem.instance != null) AudioSystem.instance.PlayMusicForLevel(1);
             SceneManager.LoadScene("MainMenu");
         }
     }

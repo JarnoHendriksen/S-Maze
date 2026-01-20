@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using TMPro;
+using UnityEngine.UI;
 
 public class QuizHandler : MonoBehaviour
 {
@@ -60,13 +61,23 @@ public class QuizHandler : MonoBehaviour
 
 
         // Show the quiz panel
-        StartCoroutine(UIHandler.instance.SlidePanel(transform, 200, 0.5f));
-        // UIHandler.instance.ShowQuizPanel();
+        // StartCoroutine(UIHandler.instance.SlidePanel(transform, 200, 0.5f));
+        UIHandler.instance.ShowQuizPanel();
         
+    }
+
+    void SetButtonsInteractable(bool interactable)
+    {
+        for(int i = 0; i < answerContainer.childCount; i++)
+        {
+            answerContainer.GetChild(i).GetComponent<Button>().interactable = interactable; ;
+        }
     }
 
     public void AnswerBtnPressed(string answer)
     {
+        // TODO: Test with and without this vvv
+        SetButtonsInteractable(false);
         Debug.Log("Answer Given: " + answer);
         // If answer equals the correct answer, add point
         string givenAnswer = answer.Trim().ToLower();
@@ -79,13 +90,13 @@ public class QuizHandler : MonoBehaviour
         if (givenAnswer == correctAnswer)
         {
             UIHandler.instance.ShowTextPrompt("Correct Answer!");
-            AudioSystem.instance.PlaySoundEffect(SoundEffectType.PuzzleCompleted);
+            if (AudioSystem.instance != null) AudioSystem.instance.PlaySoundEffect(SoundEffectType.PuzzleCompleted);
             points++;
         }
         else
         {
             UIHandler.instance.ShowTextPrompt("Wrong Answer...");
-            AudioSystem.instance.PlaySoundEffect(SoundEffectType.InvalidAction);
+            if (AudioSystem.instance != null) AudioSystem.instance.PlaySoundEffect(SoundEffectType.InvalidAction);
             
         }
 
@@ -98,7 +109,7 @@ public class QuizHandler : MonoBehaviour
             else
             {
                 UIHandler.instance.ShowTextPrompt("You need to answer all questions correctly to complete the puzzle!");
-                AudioSystem.instance.PlaySoundEffect(SoundEffectType.InvalidAction);
+                if (AudioSystem.instance != null) AudioSystem.instance.PlaySoundEffect(SoundEffectType.InvalidAction);
                 attachedPuzzle.ResetPuzzle();
             }
         }
@@ -108,22 +119,24 @@ public class QuizHandler : MonoBehaviour
 
     IEnumerator HandlePanel()
     {
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(1.5f);
 
         
 
         if (pendingQuestions.Count > 0)
         {
             SetupNextQuestion();
+            SetButtonsInteractable(true);
             yield break;
         }
             
         else
         {
             ResetQuiz();
-            yield return UIHandler.instance.SlidePanel(transform, 1100.0f, 0.5f);
+            UIHandler.instance.HideQuizPanel();
         }
-            
+
+        SetButtonsInteractable(true);
 
         yield return null;
     }

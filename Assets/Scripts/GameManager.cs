@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
     public void PuzzleCompleted()
     {
         UIHandler.instance.ShowTextPrompt("Puzzle Completed!");
-        AudioSystem.instance.PlaySoundEffect(SoundEffectType.PuzzleCompleted);
+        if (AudioSystem.instance != null) AudioSystem.instance.PlaySoundEffect(SoundEffectType.PuzzleCompleted);
         UIHandler.instance.PuzzleCompleted();
         puzzlesCompleted++;
 
@@ -128,6 +128,8 @@ public class GameManager : MonoBehaviour
 
         // Build next maze
         yield return MazeBuilder.instance.GenerateMaze(Level);
+
+        if (AudioSystem.instance != null) AudioSystem.instance.PlayMusicForLevel(Level);
 
         puzzlesInLevel = MazeBuilder.instance.RoomCount;
 
