@@ -20,6 +20,7 @@ public class UIHandler : MonoBehaviour
     [SerializeField] Transform puzzleCompleted;
     [SerializeField] Transform textPromptContainer;
     [SerializeField] TextMeshProUGUI textPrompt;
+    [SerializeField] Transform progressBar;
 
     [Header("Menu Panels")]
     [SerializeField] Transform gamePaused;
@@ -213,12 +214,48 @@ public class UIHandler : MonoBehaviour
     {
         if (!isBlackScreenVisible) return;
         StartCoroutine(FadeBlack(animationDuration, waitTime, false));
+        HideProgressBar();
     }
 
     public void HideScreen()
     {
         if (isBlackScreenVisible) return;
         StartCoroutine(FadeBlack(animationDuration));
+    }
+
+    public void SetProgressBar(string text, float progress)
+    {
+        if (!progressBar.gameObject.activeSelf)
+            progressBar.gameObject.SetActive(true);
+
+        progressBar.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
+
+        Texture2D tex = new Texture2D(500, 20);
+        tex.filterMode = FilterMode.Point;
+
+        int border = (int)(500 * progress);
+
+        for (int y = 0; y < 20; y++)
+        {
+            for (int x = 0; x < 500; x++)
+            {
+                if (x <= border)
+                    tex.SetPixel(x, y, Color.white);
+                else
+                    tex.SetPixel(x, y, Color.gray);
+            }
+        }
+
+        tex.Apply();
+
+        var newSprite = Sprite.Create(tex, new Rect(0, 0, 500, 20), Vector2.zero);
+
+        progressBar.GetChild(1).GetComponent<Image>().sprite = newSprite;
+    }
+
+    public void HideProgressBar()
+    {
+        progressBar.gameObject.SetActive(false);
     }
 
     public void ResetUI()

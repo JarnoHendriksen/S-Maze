@@ -72,3 +72,8 @@
 [LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Attempts per Question: None
 [LEVEL COMPLETED] Level: 1 | Time: 90,43s | Items: 2 | Details: [1 This info is for the question about gross contour.: 13,17], [0 This info is for the question about intervals.: 77,49] | Attempts per Question: None
 [LEVEL COMPLETED] Level: 1 | Time: 1,08s | Items: 0 | Details: None | Attempts per Question: None
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Attempts per Question: None
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Attempts per Question: None
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Attempts per Question: None
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Attempts per Question: None
+[LEVEL COMPLETED] Level: 1 | Time: 7,40s | Items: 0 | Details: None | Attempts per Question: None

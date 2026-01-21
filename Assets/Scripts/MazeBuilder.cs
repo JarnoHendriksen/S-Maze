@@ -120,14 +120,16 @@ public class MazeBuilder : MonoBehaviour
             default: yield return Img2Map(level1); break;
         }
 
-        Debug.Log("Loading Questions");
+        UIHandler.instance.SetProgressBar("Loading items...", 0.0f);
+        yield return null;
 
         levelQuestions = GameManager.instance.LookaheadQuestions((level+1) * RoomCount);
         List<Item> allRequiredItems = new();
 
-        Debug.Log("Setting hints");
+        UIHandler.instance.SetProgressBar("Loading items...", 0.5f);
+        yield return null;
 
-        foreach(var q in levelQuestions)
+        foreach (var q in levelQuestions)
         {
             foreach (var i in q.relevantInfoIds)
             {
@@ -136,12 +138,14 @@ public class MazeBuilder : MonoBehaviour
             }
         }
 
-        Debug.Log("Spreading items");
+        UIHandler.instance.SetProgressBar("Loading items...", 1.0f);
+        yield return null;
 
         PopulateItemPlaceholders(allRequiredItems);
         RemoveUnusedPlaceholders();
 
-        Debug.Log("Spawning puzzles");
+        UIHandler.instance.SetProgressBar("Loading puzzles...", 0.0f);
+        yield return null;
 
         SpawnAllPuzzles();
 
@@ -155,7 +159,7 @@ public class MazeBuilder : MonoBehaviour
 
         Ready = true;
 
-        Debug.Log("Done.");
+        UIHandler.instance.SetProgressBar("Loading puzzles...", 1.0f);
     }
 
     bool TouchesSpace(bool[] isWall, Vector2 coord, Vector2 mazeDim)
@@ -251,20 +255,16 @@ public class MazeBuilder : MonoBehaviour
             }
 
             float prog = (float)x / (float)w;
-            Debug.Log("Building maze Progress: " + (prog * 100).ToString("F1") + "%");
+            UIHandler.instance.SetProgressBar("Building Maze...", prog);
 
             yield return null;
         }
-
-        int wallCount = 0;
 
         // Instantiate only the wall cells that are adjacent to the floor tiles
         for (int x = 0; x < w; x++)
         {
             for (int y = 0; y < h; y++)
             {
-                Debug.Log("Generating walls Progress: " + wallCount + "/" + (w*h));
-                wallCount++;
                 if (TouchesSpace(isWall, new Vector2(x, y), new Vector2(w, h)))
                 {
                     Transform newWall = CreateCell(x, y, wallCell);
@@ -273,7 +273,7 @@ public class MazeBuilder : MonoBehaviour
             }
 
             float prog = (float)x / (float)w;
-            Debug.Log("Generating walls Progress: " + (prog * 100).ToString("F1") + "%");
+            UIHandler.instance.SetProgressBar("Building Walls...", prog);
             yield return null;
         }
 
