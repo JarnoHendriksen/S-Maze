@@ -2370,11 +2370,21 @@ MonoBehaviour:
     relevantInfoIds: 02000000
     answers: []
   - question: What is NOT part of the definition of a musical tone?
-    correctAnswer: 3
+    correctAnswer: 1
     answer1: Enriched by harmonics that determine its intensity
     answer2: Characterized by a specific pitch
     answer3: Shaped by its envelope
     answer4: Produced by regular vibrations
+    relevantInfoIds: 02000000
+    answers: []
+  - question: Which statement best describes melody and harmony as symbolic music
+      features?
+    correctAnswer: 1
+    answer1: Melody and harmony describe timbre and spectral texture in audio signals
+    answer2: 'Melody: pitch sequences over time, harmony: relationships between simultaneous
+      pitches'
+    answer3: Melody and harmony can only be extracted from audio recordings
+    answer4: Harmony represents rhythmic structure, while melody represents tempo
     relevantInfoIds: 02000000
     answers: []
 --- !u!4 &568041780
