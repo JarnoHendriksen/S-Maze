@@ -2221,21 +2221,31 @@ MonoBehaviour:
     sprite: {fileID: 0}
     value: This info is for the question about scales.
   questions:
-  - question: What is the interval D -> F# ?
-    correctAnswer: 1
-    answer1: Minor sixth
-    answer2: Major third
-    answer3: Perfect fifth
-    answer4: Augmented fourth
-    relevantInfoIds: 00000000
+  - question: 'Diegetic sound is best described as:'
+    correctAnswer: 3
+    answer1: Background music
+    answer2: Sound produced by the game engine
+    answer3: Sound added only for the player
+    answer4: Sound that exists in the game world and can be heard by characters
+    relevantInfoIds: 02000000
     answers: []
-  - question: What is the final note in this melody, starting with C? \n ///-/\\-
-    correctAnswer: 0
-    answer1: E
-    answer2: A
-    answer3: Bb
-    answer4: G
-    relevantInfoIds: 01000000
+  - question: Which IEZA category describes ambient environmental sounds like wind
+      or crowd noise?
+    correctAnswer: 1
+    answer1: Interface
+    answer2: Zone
+    answer3: Affect
+    answer4: Effect
+    relevantInfoIds: 02000000
+    answers: []
+  - question: Which technique achieves interactive music by adding or removing musical
+      layers?
+    correctAnswer: 2
+    answer1: Leitmotif variation
+    answer2: MIDI synthesis
+    answer3: Vertical layering
+    answer4: Horizontal resequencing
+    relevantInfoIds: 02000000
     answers: []
   - question: How many notes are in a scale, including the octave?
     correctAnswer: 1
@@ -2245,12 +2255,110 @@ MonoBehaviour:
     answer4: 10
     relevantInfoIds: 03000000
     answers: []
+  - question: What is a leitmotif
+    correctAnswer: 0
+    answer1: A recurring musical theme linked to a character, place, or idea
+    answer2: A musical scale
+    answer3: A UI sound effect
+    answer4: A looping background track
+    relevantInfoIds: 02000000
+    answers: []
   - question: What does the color of a spectrogram indicate?
     correctAnswer: 3
     answer1: Frequency
     answer2: Duration
     answer3: Nothing
     answer4: Intensity
+    relevantInfoIds: 02000000
+    answers: []
+  - question: Which of the following is a characteristic of music consumption?
+    correctAnswer: 1
+    answer1: High commitment per item
+    answer2: Often sequential (playlists, queues, etc)
+    answer3: Re-recommendation is undesirable
+    answer4: Always active listening
+    relevantInfoIds: 02000000
+    answers: []
+  - question: 'In the IEZA model, Interface sounds are:'
+    correctAnswer: 0
+    answer1: Non-diegetic and activity-based
+    answer2: Diegetic and setting-based
+    answer3: Non-diegetic and setting-based
+    answer4: Diegetic and activity-based
+    relevantInfoIds: 02000000
+    answers: []
+  - question: What is the final note in this melody, starting with C? \n ///-/\\-
+    correctAnswer: 0
+    answer1: E
+    answer2: A
+    answer3: Bb
+    answer4: G
+    relevantInfoIds: 01000000
+    answers: []
+  - question: Which best describes transdiegetic sound in games?
+    correctAnswer: 1
+    answer1: Ambient environmental sounds
+    answer2: Sound that bridges gameplay information and player experience
+    answer3: Sound heard only by characters
+    answer4: Sound heard only by the player
+    relevantInfoIds: 02000000
+    answers: []
+  - question: Which of the following is an example of ludic hearing?
+    correctAnswer: 3
+    answer1: Enjoying music aesthetically
+    answer2: Interpreting music symbolically
+    answer3: Ignoring music while focusing on visuals
+    answer4: Using musical cues to time player actions
+    relevantInfoIds: 02000000
+    answers: []
+  - question: What makes MIDI useful for interactive music in games?
+    correctAnswer: 1
+    answer1: Fixed timbre
+    answer2: Easy real-time modification
+    answer3: Higher audio quality
+    answer4: Larger file size
+    relevantInfoIds: 02000000
+    answers: []
+  - question: What is the interval D -> F# ?
+    correctAnswer: 1
+    answer1: Minor sixth
+    answer2: Major third
+    answer3: Perfect fifth
+    answer4: Augmented fourth
+    relevantInfoIds: 00000000
+    answers: []
+  - question: Which pair correctly matches IEZA quadrants with their functional role?
+    correctAnswer: 1
+    answer1: Interface = diegetic activity, Zone = non-diegetic setting
+    answer2: Zone = diegetic setting, Interface = non-diegetic activity
+    answer3: Affect = diegetic activity, Effect = non-diegetic setting
+    answer4: Effect = non-diegetic activity, Affect = diegetic setting
+    relevantInfoIds: 02000000
+    answers: []
+  - question: Which BRECVEMA mechanism explains emotional response caused by sudden
+      loud sounds?
+    correctAnswer: 1
+    answer1: Evaluative conditioning
+    answer2: Brain stem reflex
+    answer3: Contagion
+    answer4: Musical expectancy
+    relevantInfoIds: 02000000
+    answers: []
+  - question: Which statement best distinguishes collaborative filtering from content-based
+      filtering?
+    correctAnswer: 2
+    answer1: Content-based filtering avoids cold start problems for users
+    answer2: Content-based filtering uses other users' behavior
+    answer3: Collaborative filtering assumes similar users have similar tastes
+    answer4: Collaborative filtering relies on item features only
+    relevantInfoIds: 02000000
+    answers: []
+  - question: Which combination best supports sensory immersion?
+    correctAnswer: 2
+    answer1: Clear goals and scoring systems
+    answer2: Emotional narrative and symbolic music
+    answer3: Coherent audiovisual feedback and spatial sound
+    answer4: High challenge and player identification
     relevantInfoIds: 02000000
     answers: []
 --- !u!4 &568041780
@@ -3295,8 +3403,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34
-  m_fontSizeBase: 34
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3896,7 +4004,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 900, y: 250}
+  m_SizeDelta: {x: 1100, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &940059423
 MonoBehaviour:
@@ -3956,7 +4064,7 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 400, y: 100}
+  m_CellSize: {x: 500, y: 150}
   m_Spacing: {x: 15, y: 15}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -4153,8 +4261,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 460, y: 200}
-  m_SizeDelta: {x: 1000, y: 800}
+  m_AnchoredPosition: {x: 360, y: 200}
+  m_SizeDelta: {x: 1200, y: 800}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &969310240
 MonoBehaviour:
@@ -6232,8 +6340,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34
-  m_fontSizeBase: 34
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -6949,8 +7057,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34
-  m_fontSizeBase: 34
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -10429,7 +10537,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Major seventh
+  m_text: Minor seventh
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -10456,8 +10564,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34
-  m_fontSizeBase: 34
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
