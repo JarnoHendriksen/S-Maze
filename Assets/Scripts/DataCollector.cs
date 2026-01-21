@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-//using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 public class DataCollector : MonoBehaviour
@@ -16,6 +15,7 @@ public class DataCollector : MonoBehaviour
     private float sessionStartTime;
     private int currentLevel = 1;
     private int attempts = 0;
+    private Dictionary<string, int> attemptsPerQ = new();
     private Dictionary<string, string> itemsCollector = new();
 
     private List<DataInfo> SessionData = new();
@@ -40,7 +40,14 @@ public class DataCollector : MonoBehaviour
         itemsCollector.Add((Time.time - sessionStartTime).ToString("F2"), (item.type.ToString() + " " + item.value));
     }
 
-    public void LogQuizAttempt()
+    public void LogQuizAttempts(string question)
+    {
+        if (!isLoggingEnabled) return;
+        attemptsPerQ.Add(question, attempts);
+        attempts = 0;
+    }
+
+    public void AddAttempt()
     {
         if (!isLoggingEnabled) return;
         attempts++;
@@ -73,7 +80,7 @@ public class DataCollector : MonoBehaviour
             timeLevel = TotalTime,
             numberLevel = currentLevel,
             itemsCollected = new Dictionary<string, string>(itemsCollector),
-            attempts = attempts
+            attemptsPerQ = new Dictionary<string, int>(attempts)
         };
         SessionData.Add(data);
 
@@ -104,6 +111,8 @@ public class DataCollector : MonoBehaviour
 
         string collectedItemsString = string.Join(", ", entry.itemsCollected.Select(kvp =>
             $"[{kvp.Value}: {kvp.Key:F2}]"));
+        string attemptsString = string.Join(", ", entry.attemptsPerQ.Select(kvp =>
+            $"[Question: {kvp.Key} - Attempts: {kvp.Value}]"));
 
         using (StreamWriter writer = new StreamWriter(filePath, true)) //Append to file
         {
@@ -112,7 +121,7 @@ public class DataCollector : MonoBehaviour
                   $"Time: {entry.timeLevel.ToString("F2")}s | " +
                   $"Items: {entry.itemsCollected.Count} | " +
                   $"Details: {(entry.itemsCollected.Count > 0 ? collectedItemsString : "None")} | " +
-                  $"Quiz Attempts: {entry.attempts}";
+                  $"Attempts per Question: {(entry.attemptsPerQ.Count > 0 ? attemptsString : "None")}";
             writer.WriteLine(LogEntry);
         }
     }
@@ -122,7 +131,7 @@ public class DataCollector : MonoBehaviour
     {
         public float timeLevel;
         public int numberLevel;
-        public int attempts;
+        public Dictionary<string, int> attemptsPerQ;
         public Dictionary<string, string> itemsCollected;
     }
 }
