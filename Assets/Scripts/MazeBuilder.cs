@@ -1,10 +1,7 @@
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Collections.Generic;
-using System;
 using System.Linq;
-using UnityEditor.SearchService;
 
 using ParseFunc = System.Func<PixelData, ColorConstraints, bool>;
 using System.Collections;
@@ -124,25 +121,22 @@ public class MazeBuilder : MonoBehaviour
             default: yield break;
         }
 
-        //List<Item> allRequiredItems = new();
+        List<QuizQuestion> levelQuestions = GameManager.instance.GetQuizQuestions((level+1) * RoomCount, true);
+        List<Item> allRequiredItems = new();
 
-        //foreach (var q in quests)
-        //{
-        //    foreach (var id in q.requiredItemIds)
-        //    {
-        //        Item item = GameManager.instance.items.Find(x => x.id.Equals(id));
-        //        allRequiredItems.Add(item);
-        //    }
-        //}
+        foreach(var q in levelQuestions)
+        {
+            foreach (var i in q.relevantInfoIds)
+            {
+                Item item = GameManager.instance.items.Find(x => x.id.Equals(i));
+                allRequiredItems.Add(item);
+            }
+        }
 
-        //for (int i = 0; i < allRequiredItems.Count / 10 + 1; i++)
-        //{
-        //    int idx = UnityEngine.Random.Range(0, GameManager.instance.items.Count);
-        //    allRequiredItems.Add(GameManager.instance.items[idx]);
-        //}
+        PopulateItemPlaceholders(allRequiredItems);
+        RemoveUnusedPlaceholders();
 
-        //PopulateItemPlaceholders(allRequiredItems);
-        //RemoveUnusedPlaceholders();
+        SpawnAllPuzzles();
 
         // Combine colliders of child objects
         fakeWallObjects.GetComponent<CompositeCollider2D>().GenerateGeometry();
@@ -193,7 +187,7 @@ public class MazeBuilder : MonoBehaviour
         // Color coding:
         // Player: #ff0000
         // Door: #ffffXX, XX = clockwise rotation percentage in hex (i.e. 19 = 25%, 32 = 50%, 4b = 75%)
-        // Item: #ffXXff, XX = room id (prevents items required for a room to be locked behind closed doors)
+        // Item: #ff00ff
         // Hidden corridor: #505050
         // Room: #XXY0ZZ, XX = room id (10-99), Y = level id (0, 1, 2), ZZ = orientation
         // Exit: #beeeef
@@ -204,7 +198,7 @@ public class MazeBuilder : MonoBehaviour
 
         ColorConstraints playerColor = new(0xff, 0x00, 0x00);
         ColorConstraints doorColor = new(new ExactColor(0xff), new ExactColor(0xff), validOrientations);
-        ColorConstraints objectColor = new(new ExactColor(0xff), validRoomIds, new ExactColor(0xff));
+        ColorConstraints objectColor = new(0xff, 0x00, 0xff);
         ColorConstraints hiddenPathColor = new(new ExactColor(0x50), new ExactColor(0x50), new ExactColor(0x50));
         ColorConstraints roomColor = new(validRoomIds, validLevelIds, validOrientations);
         ColorConstraints exitColor = new(0xbe, 0xee, 0xef);
@@ -235,7 +229,7 @@ public class MazeBuilder : MonoBehaviour
                 (ParseFunc parser, ColorConstraints cc)[] parsers =
                 { 
                     (ParsePlayer, playerColor), (ParseDoor, doorColor),
-                    /*(ParseObject, objectColor),*/ (ParseHiddenPath, hiddenPathColor),
+                    (ParseObject, objectColor), (ParseHiddenPath, hiddenPathColor),
                     (ParseRoom, roomColor), (ParseExit, exitColor)
                 };
 
@@ -264,8 +258,6 @@ public class MazeBuilder : MonoBehaviour
             }
             yield return null;
         }
-
-        SpawnAllPuzzles();
     }
 
     void SpawnAllPuzzles()
@@ -345,6 +337,8 @@ public class MazeBuilder : MonoBehaviour
         (byte r, byte g, byte b) = ToRGB255(pixel.color);
         if (!cc.red.IsValid(r) || !cc.green.IsValid(g) || !cc.blue.IsValid(b)) return false;
 
+        Debug.Log("parsing item");
+
         Transform obj = CreateCell(pixel.position.x, pixel.position.y, itemPlaceholder);
         obj.SetParent(itemObjects);
 
@@ -400,24 +394,20 @@ public class MazeBuilder : MonoBehaviour
     void PopulateItemPlaceholders(List<Item> requiredItems)
     {
         List<ItemData> allPlaceholders = itemObjects.GetComponentsInChildren<ItemData>().ToList();
+
+        Debug.Log("Required Item Count: " + requiredItems.Count);
+        Debug.Log("Placeholder Count: " + allPlaceholders.Count);
+
+        if (allPlaceholders.Count <= 0) return;
+
         List<Item> itemsToDistribute = requiredItems;
-
-        var sprites = Resources.LoadAll<Sprite>("NoteSymbols");
-        Dictionary<string, Sprite> noteSprites = new();
-
-        foreach (var s in sprites)
-        {
-            noteSprites.Add(s.name, s);
-        }
-
-        Debug.Log("Sprite count: " + noteSprites.Count);
 
         while (itemsToDistribute.Count > 0)
         {
             int placeholderIdx = UnityEngine.Random.Range(0, allPlaceholders.Count);
             int itemIdx = UnityEngine.Random.Range(0, itemsToDistribute.Count);
 
-            allPlaceholders[placeholderIdx].Init(noteSprites, itemsToDistribute[itemIdx].type, itemsToDistribute[itemIdx].value, true);
+            allPlaceholders[placeholderIdx].Init(itemsToDistribute[itemIdx].sprite, itemsToDistribute[itemIdx].id, itemsToDistribute[itemIdx].value);
 
             allPlaceholders.RemoveAt(placeholderIdx);
             itemsToDistribute.RemoveAt(itemIdx);
@@ -430,7 +420,7 @@ public class MazeBuilder : MonoBehaviour
 
         foreach (var item in allPlaceholders)
         {
-            if (item.type == ItemType.None)
+            if (item.id == -1)
             {
                 Destroy(item.gameObject);
             }

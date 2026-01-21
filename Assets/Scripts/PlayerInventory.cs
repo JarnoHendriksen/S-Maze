@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +5,7 @@ public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory instance;
 
-    Dictionary<string, InventoryItem> inventory;
+    Dictionary<int, InventoryItem> inventory;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -19,16 +18,16 @@ public class PlayerInventory : MonoBehaviour
 
     public void CollectItem(ItemData item)
     {
-        if (inventory.TryGetValue(item.ID, out InventoryItem item_))
+        if (inventory.TryGetValue(item.id, out InventoryItem item_))
         {
             item_.amount++;
         }
         else
         {
-            inventory.Add(item.ID, new InventoryItem(item.type, item.value, 1));
+            inventory.Add(item.id, new InventoryItem(item.id, item.value, 1));
         }
 
-        Debug.Log("Obtained item: " + item.type.ToString() + " " + item.value);
+        Debug.Log("Obtained item: " + item.id + " " + item.value);
         Debug.Log("Currently in inventory: " + PrintInventory());
 
         DataCollector.Instance.LogItemCollected(item);
@@ -40,9 +39,9 @@ public class PlayerInventory : MonoBehaviour
 
         foreach(var i in query)
         {
-            if (inventory.TryGetValue(i.ID, out InventoryItem item_))
+            if (inventory.TryGetValue(i.id, out InventoryItem item_))
             {
-                if (item_.amount < i.amount) result.Add(new InventoryItem(i.type, i.value, i.amount - item_.amount));
+                if (item_.amount < i.amount) result.Add(new InventoryItem(i.id, i.value, i.amount - item_.amount));
             }
             else result.Add(i);
         }
@@ -56,7 +55,7 @@ public class PlayerInventory : MonoBehaviour
 
         foreach(var item in inventory.Values)
         {
-            result += item.ID + ":" + item.amount + ", ";
+            result += item.id + ":" + item.amount + ", ";
         }
 
         return result;
@@ -66,21 +65,14 @@ public class PlayerInventory : MonoBehaviour
 [System.Serializable]
 public class InventoryItem
 {
-    public ItemType type;
     public string value;
     public int amount;
 
-    public string ID
-    {
-        get
-        {
-            return type + value; // Example: A minor chord = 2Am, C# note = 1C#
-        }
-    }
+    public int id;
 
-    public InventoryItem(ItemType type, string value, int amount)
+    public InventoryItem(int id, string value, int amount)
     {
-        this.type = type;
+        this.id = id;
         this.value = value;
         this.amount = amount;
     }

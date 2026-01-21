@@ -1,4 +1,3 @@
-//using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
@@ -14,11 +13,15 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] Minimap minimap;
 
+    [SerializeField] Sprite itemSprite;
+
     [SerializeField] public List<Item> items;
 
     [SerializeField] List<QuizQuestion> questions;
 
     List<QuizQuestion> undistributedQuestions;
+
+    int randomSeed = 0;
 
     int puzzlesCompleted = 0;
     int puzzlesInLevel = 0;
@@ -57,12 +60,20 @@ public class GameManager : MonoBehaviour
         if (instance == null) instance = this;
         else Destroy(gameObject);
 
+        randomSeed = (int)System.DateTime.Now.Millisecond;
+
         undistributedQuestions = new();
 
         foreach (var q in questions)
         {
             q.answers = new string[4]{ q.answer1, q.answer2, q.answer3, q.answer4};
             undistributedQuestions.Add(q);
+        }
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            items[i].id = i;
+            items[i].sprite = itemSprite;
         }
 
         LevelCompleted = false;
@@ -147,10 +158,14 @@ public class GameManager : MonoBehaviour
 
         yield return null;
     }
-    public List<QuizQuestion> GetQuizQuestions(int count)
+
+    public List<QuizQuestion> GetQuizQuestions(int count, bool peekOnly = false)
     {
         if (undistributedQuestions.Count < count)
         {
+            Random.State prevState = Random.state;
+            Random.InitState(randomSeed);
+
             int missing = count - undistributedQuestions.Count;
             Debug.LogWarning($"Not enough questions declared! Reusing {missing} questions.");
 
@@ -170,11 +185,13 @@ public class GameManager : MonoBehaviour
 
             randQs.Concat(undistributedQuestions).ToList();
 
+            Random.state = prevState;
+
             return randQs;
         }
 
         List<QuizQuestion> qs = undistributedQuestions.Take(count).ToList();
-        undistributedQuestions.RemoveRange(0, qs.Count);
+        if (!peekOnly) undistributedQuestions.RemoveRange(0, qs.Count);
 
         return qs;
     }
@@ -185,10 +202,9 @@ public class GameManager : MonoBehaviour
 [System.Serializable]
 public class Item
 {
-    public int id;
-    public ItemType type;
-    public Sprite sprite;
-    public string value;
+    [HideInInspector] public int id;
+    [HideInInspector] public Sprite sprite;
+    [TextArea(3,5)] public string value;
 }
 
 [System.Serializable]
@@ -201,6 +217,9 @@ public class QuizQuestion
     public string answer2;
     public string answer3;
     public string answer4;
+
+    [Tooltip("Indices of notes that are related to this question.")]
+    public int[] relevantInfoIds;
 
     [HideInInspector] public string[] answers;
 }

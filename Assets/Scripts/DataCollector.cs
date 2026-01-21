@@ -1,10 +1,7 @@
-using JetBrains.Annotations;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-//using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 public class DataCollector : MonoBehaviour
@@ -37,7 +34,7 @@ public class DataCollector : MonoBehaviour
     public void LogItemCollected(ItemData item)
     {
         if (!isLoggingEnabled) return;
-        itemsCollector.Add((Time.time - sessionStartTime).ToString("F2"), (item.type.ToString() + " " + item.value));
+        itemsCollector.Add((Time.time - sessionStartTime).ToString("F2"), (item.id + " " + item.value));
     }
 
     public void LogQuizAttempt()

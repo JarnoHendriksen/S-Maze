@@ -26,3 +26,13 @@
 [LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
 [LEVEL COMPLETED] Level: 1 | Time: 106,20s | Items: 0 | Details: None | Quiz Attempts: 4
 [LEVEL COMPLETED] Level: 1 | Time: 1,23s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
