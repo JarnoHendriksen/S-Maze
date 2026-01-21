@@ -84,13 +84,16 @@ public class QuizHandler : MonoBehaviour
         correctAnswer = correctAnswer.Trim().ToLower();
 
         Debug.Log($"Correct/Given Answer: {correctAnswer}/{givenAnswer}");
-        DataCollector.Instance.LogQuizAttempt();
+
+        DataCollector.Instance.AddAttempt();
 
         if (givenAnswer == correctAnswer)
         {
             UIHandler.instance.ShowTextPrompt("Correct Answer!");
             if (AudioSystem.instance != null) AudioSystem.instance.PlaySoundEffect(SoundEffectType.PuzzleCompleted);
             points++;
+
+            DataCollector.Instance.LogQuizAttempts(currentQuestion.question);
         }
         else
         {
