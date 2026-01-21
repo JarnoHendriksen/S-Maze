@@ -40,7 +40,8 @@ public class MazeBuilder : MonoBehaviour
     [SerializeField] Texture2D mazeLayout;
     [SerializeField] List<Quest> quests;
 
-    List<Room> rooms;
+    List<Room> rooms = new();
+    List<QuizQuestion> levelQuestions = new();
 
     public int RoomCount { get; private set; }
 
@@ -59,8 +60,6 @@ public class MazeBuilder : MonoBehaviour
     {
         if (instance == null) instance = this;
         else Destroy(gameObject);
-
-        rooms = new();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -115,14 +114,18 @@ public class MazeBuilder : MonoBehaviour
 
         switch (level)
         {
-            case 1: yield return StartCoroutine(Img2Map(level1)); break;
-            case 2: yield return StartCoroutine(Img2Map(level2)); break;
-            case 3: yield return StartCoroutine(Img2Map(level3)); break;
-            default: yield break;
+            case 1: yield return Img2Map(level1); break;
+            case 2: yield return Img2Map(level2); break;
+            case 3: yield return Img2Map(level3); break;
+            default: yield return Img2Map(level1); break;
         }
 
-        List<QuizQuestion> levelQuestions = GameManager.instance.GetQuizQuestions((level+1) * RoomCount, true);
+        Debug.Log("Loading Questions");
+
+        levelQuestions = GameManager.instance.LookaheadQuestions((level+1) * RoomCount);
         List<Item> allRequiredItems = new();
+
+        Debug.Log("Setting hints");
 
         foreach(var q in levelQuestions)
         {
@@ -133,12 +136,17 @@ public class MazeBuilder : MonoBehaviour
             }
         }
 
+        Debug.Log("Spreading items");
+
         PopulateItemPlaceholders(allRequiredItems);
         RemoveUnusedPlaceholders();
+
+        Debug.Log("Spawning puzzles");
 
         SpawnAllPuzzles();
 
         // Combine colliders of child objects
+        Debug.Log("Generate geometry");
         fakeWallObjects.GetComponent<CompositeCollider2D>().GenerateGeometry();
 
         wallObjects.GetComponent<CompositeCollider2D>().GenerateGeometry();
@@ -147,7 +155,7 @@ public class MazeBuilder : MonoBehaviour
 
         Ready = true;
 
-        yield return null;
+        Debug.Log("Done.");
     }
 
     bool TouchesSpace(bool[] isWall, Vector2 coord, Vector2 mazeDim)
@@ -242,22 +250,34 @@ public class MazeBuilder : MonoBehaviour
                 }
             }
 
+            float prog = (float)x / (float)w;
+            Debug.Log("Building maze Progress: " + (prog * 100).ToString("F1") + "%");
+
             yield return null;
         }
+
+        int wallCount = 0;
 
         // Instantiate only the wall cells that are adjacent to the floor tiles
         for (int x = 0; x < w; x++)
         {
             for (int y = 0; y < h; y++)
             {
+                Debug.Log("Generating walls Progress: " + wallCount + "/" + (w*h));
+                wallCount++;
                 if (TouchesSpace(isWall, new Vector2(x, y), new Vector2(w, h)))
                 {
                     Transform newWall = CreateCell(x, y, wallCell);
                     newWall.SetParent(wallObjects);
                 }
             }
+
+            float prog = (float)x / (float)w;
+            Debug.Log("Generating walls Progress: " + (prog * 100).ToString("F1") + "%");
             yield return null;
         }
+
+        Debug.Log("Maze Gen finished.");
     }
 
     void SpawnAllPuzzles()
@@ -450,6 +470,8 @@ public class MazeBuilder : MonoBehaviour
                 Destroy(transform.GetChild(i).gameObject);
         }
         rooms.Clear();
+
+        RoomCount = 0;
 
         spawnedRooms.Clear();
     }

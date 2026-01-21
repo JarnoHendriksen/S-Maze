@@ -3,6 +3,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using UnityEngine.Rendering;
 
 public class UIHandler : MonoBehaviour
 {
@@ -24,6 +26,7 @@ public class UIHandler : MonoBehaviour
     [SerializeField] Transform controlsInfo;
     [SerializeField] Transform levelCompleted;
     [SerializeField] Transform quizPanel;
+    [SerializeField] Transform hintsPanel;
 
     [Header("Settings")]
     [SerializeField] float animationDuration = 0.5f;
@@ -31,12 +34,14 @@ public class UIHandler : MonoBehaviour
     float panelActiveY = 200;
     float pausePanelY = 780;
     float levelCompletedY = 300;
+    float hintActiveY = 400;
     float hiddenY = 2500; // Increased to ensure it's off-screen
 
     bool isPanelMoving = false;
     bool isPausePanelOpen = false;
     bool isControlsPanelOpen = true; // Starts open
     bool isQuizPanelOpen = false;
+    bool isHintsPanelOpen = false;
     bool isLevelCompletedPanelOpen = false;
     bool isBlackScreenVisible = true;
     bool isTransitioning = false;
@@ -76,8 +81,6 @@ public class UIHandler : MonoBehaviour
             isControlsPanelOpen = true;
         }
     }
-
-    // // PANEL MANAGEMENT // //
 
     public void SetLevel(int lvl)
     {
@@ -146,6 +149,7 @@ public class UIHandler : MonoBehaviour
         isPausePanelOpen = pauseGame;
     }
 
+    // // PANEL MANAGEMENT // //
     public void ShowQuizPanel()
     {
         if (isQuizPanelOpen) return;
@@ -160,6 +164,23 @@ public class UIHandler : MonoBehaviour
         isQuizPanelOpen = false;
         GameManager.instance.SetPaused(false);
         StartCoroutine(UIHandler.instance.SlidePanel(quizPanel, hiddenY, animationDuration));
+    }
+
+    public void ShowHint(string text)
+    {
+        if (isHintsPanelOpen) return;
+        isHintsPanelOpen = true;
+        GameManager.instance.SetPaused(true);
+        hintsPanel.Find("Hint").GetComponent<TextMeshProUGUI>().text = text;
+        StartCoroutine(UIHandler.instance.SlidePanel(hintsPanel, hintActiveY, animationDuration));
+    }
+
+    public void HideHint()
+    {
+        if (!isHintsPanelOpen) return;
+        isHintsPanelOpen = false;
+        GameManager.instance.SetPaused(false);
+        StartCoroutine(UIHandler.instance.SlidePanel(hintsPanel, hiddenY, animationDuration));
     }
 
     public void ShowLevelCompletedScreen()
@@ -226,7 +247,10 @@ public class UIHandler : MonoBehaviour
         GameManager.instance.TogglePaused();
     }
 
-    // REMOVED: SettingsBtnClick()
+    public void ToMenuBtnClick()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
 
     public void ControlsPanelBtnClick(bool playSound = true)
     {
@@ -250,6 +274,12 @@ public class UIHandler : MonoBehaviour
             Debug.LogError("UIHandler Error: 'Controls Info' is missing! Drag the panel into the UIHandler slot in the Inspector.");
         }
     }
+
+    public void HintBtnClick()
+    {
+        HideHint();
+    }
+
     public void NextLevelBtnClick()
     {
         if (GameManager.instance.Level < 3)
@@ -367,3 +397,12 @@ public class UIHandler : MonoBehaviour
         isTextPromptVisible = false;
     }
 }
+
+public enum Panel
+{
+    Pause,
+    Controls,
+    Quiz,
+    Hint,
+    LevelCompleted
+};

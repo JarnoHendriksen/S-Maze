@@ -36,3 +36,39 @@
 [LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
 [LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
 [LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 1 | Time: 85,82s | Items: 2 | Details: [0 This info is for the question about intervals.: 18,46], [3 This info is for the question about scales.: 75,28] | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 1 | Time: 1,80s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 1 | Time: 78,49s | Items: 1 | Details: [3 This info is for the question about scales.: 12,11] | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 1 | Time: 6,41s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 1 | Time: 76,57s | Items: 1 | Details: [3 This info is for the question about scales.: 40,19] | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 1 | Time: 1,33s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 1 | Time: 66,83s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 1 | Time: 5,27s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 1 | Time: 75,68s | Items: 2 | Details: [3 This info is for the question about scales.: 68,86], [2 This info is for the question about spectrograms.: 71,50] | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 1 | Time: 3,68s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 1 | Time: 87,80s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 1 | Time: 4,50s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 1 | Time: 102,00s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 1 | Time: 1,34s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Quiz Attempts: 0
+[LEVEL COMPLETED] Level: 1 | Time: 101,55s | Items: 2 | Details: [1 This info is for the question about gross contour.: 71,89], [0 This info is for the question about intervals.: 86,59] | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 1 | Time: 1,29s | Items: 0 | Details: None | Quiz Attempts: 4
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Attempts per Question: None
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Attempts per Question: None
+[LEVEL COMPLETED] Level: 0 | Time: 0,00s | Items: 0 | Details: None | Attempts per Question: None
+[LEVEL COMPLETED] Level: 1 | Time: 90,43s | Items: 2 | Details: [1 This info is for the question about gross contour.: 13,17], [0 This info is for the question about intervals.: 77,49] | Attempts per Question: None
+[LEVEL COMPLETED] Level: 1 | Time: 1,08s | Items: 0 | Details: None | Attempts per Question: None

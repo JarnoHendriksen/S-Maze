@@ -77,6 +77,8 @@ public class PlayerController : MonoBehaviour
             ItemData idat = collision.gameObject.GetComponent<ItemData>();
             PlayerInventory.instance.CollectItem(idat);
             Destroy(collision.gameObject);
+
+            UIHandler.instance.ShowHint(idat.value);
         }
         else if (collision.CompareTag("exit"))
         {

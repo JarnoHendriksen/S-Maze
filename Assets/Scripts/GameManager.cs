@@ -19,9 +19,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] List<QuizQuestion> questions;
 
-    List<QuizQuestion> undistributedQuestions;
-
-    int randomSeed = 0;
+    Queue<QuizQuestion> pendingQuestions = new();
 
     int puzzlesCompleted = 0;
     int puzzlesInLevel = 0;
@@ -60,14 +58,10 @@ public class GameManager : MonoBehaviour
         if (instance == null) instance = this;
         else Destroy(gameObject);
 
-        randomSeed = (int)System.DateTime.Now.Millisecond;
-
-        undistributedQuestions = new();
-
         foreach (var q in questions)
         {
             q.answers = new string[4]{ q.answer1, q.answer2, q.answer3, q.answer4};
-            undistributedQuestions.Add(q);
+            pendingQuestions.Enqueue(q);
         }
 
         for (int i = 0; i < items.Count; i++)
@@ -159,39 +153,33 @@ public class GameManager : MonoBehaviour
         yield return null;
     }
 
-    public List<QuizQuestion> GetQuizQuestions(int count, bool peekOnly = false)
+    public List<QuizQuestion> GetQuizQuestions(int count)
     {
-        if (undistributedQuestions.Count < count)
+        if (pendingQuestions.Count < count)
         {
-            Random.State prevState = Random.state;
-            Random.InitState(randomSeed);
-
-            int missing = count - undistributedQuestions.Count;
-            Debug.LogWarning($"Not enough questions declared! Reusing {missing} questions.");
-
-            HashSet<int> randIdx = new();
-
-            while(randIdx.Count < missing)
-            {
-                randIdx.Add(Random.Range(0, questions.Count));
-            }
-
-            List<QuizQuestion> randQs = new();
-
-            foreach (int i in randIdx)
-            {
-                randQs.Add(questions[i]);
-            }
-
-            randQs.Concat(undistributedQuestions).ToList();
-
-            Random.state = prevState;
-
-            return randQs;
+            Debug.LogWarning("Too many questions requested!");
         }
 
-        List<QuizQuestion> qs = undistributedQuestions.Take(count).ToList();
-        if (!peekOnly) undistributedQuestions.RemoveRange(0, qs.Count);
+        List<QuizQuestion> qs = new();
+
+        while (qs.Count < count)
+        {
+            var q = pendingQuestions.Dequeue();
+            qs.Add(q);
+            pendingQuestions.Enqueue(q);
+        }
+
+        return qs;
+    }
+
+    public List<QuizQuestion> LookaheadQuestions(int count)
+    {
+        if (pendingQuestions.Count < count)
+        {
+            Debug.LogWarning("Too many questions requested!");
+        }
+
+        List<QuizQuestion> qs = pendingQuestions.Take(count).ToList();
 
         return qs;
     }

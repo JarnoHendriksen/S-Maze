@@ -10,6 +10,7 @@ TagManager:
   - door
   - item
   - Exit
+  - exit
   layers:
   - Default
   - TransparentFX
