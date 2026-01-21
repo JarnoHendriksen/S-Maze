@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,7 +35,7 @@ public class DataCollector : MonoBehaviour
     public void LogItemCollected(ItemData item)
     {
         if (!isLoggingEnabled) return;
-        itemsCollector.Add((Time.time - sessionStartTime).ToString("F2"), (item.type.ToString() + " " + item.value));
+        itemsCollector.Add((Time.time - sessionStartTime).ToString("F2"), (item.id + " " + item.value));
     }
 
     public void LogQuizAttempts(string question)

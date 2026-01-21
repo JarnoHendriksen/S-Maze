@@ -3,8 +3,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Threading;
-using UnityEngine.PlayerLoop;
 
 public class MenuUIHandler : MonoBehaviour
 {
@@ -22,18 +20,18 @@ public class MenuUIHandler : MonoBehaviour
     public void StartGame()
     {
         playBtnPressed = true;
-        AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
+        if (AudioSystem.instance != null) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
     }
 
     public void OpenSettings()
     {
-        AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
+        if (AudioSystem.instance != null) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
         // MainMenuUIHandler.instance.OpenSettings();
     }
 
     public void ExitGame()
     {
-        AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
+        if (AudioSystem.instance != null) AudioSystem.instance.PlaySoundEffect(SoundEffectType.UI_BtnPressed);
         Application.Quit();
     }
 
