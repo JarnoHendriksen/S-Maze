@@ -2361,6 +2361,22 @@ MonoBehaviour:
     answer4: High challenge and player identification
     relevantInfoIds: 02000000
     answers: []
+  - question: What determines the key of a piece of music?
+    correctAnswer: 3
+    answer1: The first note in the melody
+    answer2: The fundamental frequency and its positive multiples
+    answer3: The tonic note
+    answer4: The relative density of pitch classes in combination with the tonic
+    relevantInfoIds: 02000000
+    answers: []
+  - question: What is NOT part of the definition of a musical tone?
+    correctAnswer: 3
+    answer1: Enriched by harmonics that determine its intensity
+    answer2: Characterized by a specific pitch
+    answer3: Shaped by its envelope
+    answer4: Produced by regular vibrations
+    relevantInfoIds: 02000000
+    answers: []
 --- !u!4 &568041780
 Transform:
   m_ObjectHideFlags: 0
