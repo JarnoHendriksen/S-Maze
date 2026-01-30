@@ -29,6 +29,8 @@ public class AudioSystem : MonoBehaviour
     bool isFading = false;
     bool interrupted = false;
 
+    float maxVolume = 0.55f;
+
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -144,7 +146,7 @@ public class AudioSystem : MonoBehaviour
     IEnumerator FadeAudio(float fadeTime, AudioSource source, bool fadeIn, AudioClip newClip = null)
     {
         float startVolume = 0.0f;
-        float endVolume = 1.0f;
+        float endVolume = maxVolume;
 
         if (!fadeIn)
         {

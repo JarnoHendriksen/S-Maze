@@ -317,6 +317,14 @@ public class UIHandler : MonoBehaviour
         HideHint();
     }
 
+    public void ForceReloadQuiz()
+    {
+        HideQuizPanel();
+        QuizHandler.instance.ResetQuiz();
+        GameManager.instance.PuzzleCompleted();
+        QuizHandler.instance.SetButtonsInteractable(true);
+    }
+
     public void NextLevelBtnClick()
     {
         if (GameManager.instance.Level < 3)

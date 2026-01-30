@@ -25,11 +25,11 @@ public class PlayerController : MonoBehaviour
         // DELETED the "Escape" key check. 
         // DELETED space interaction
         // The UIHandler now handles "Escape" automatically in its own
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            currentLevel++;
-            StartCoroutine(GameManager.instance.LoadNextLevel());
-        }
+        //if (Input.GetKeyDown(KeyCode.R))
+        //{
+        //    currentLevel++;
+        //    StartCoroutine(GameManager.instance.LoadNextLevel());
+        //}
 
         rb.linearVelocity = Vector2.zero;
 

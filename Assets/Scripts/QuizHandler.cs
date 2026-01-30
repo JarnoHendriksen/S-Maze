@@ -65,7 +65,7 @@ public class QuizHandler : MonoBehaviour
         
     }
 
-    void SetButtonsInteractable(bool interactable)
+    public void SetButtonsInteractable(bool interactable)
     {
         for(int i = 0; i < answerContainer.childCount; i++)
         {
@@ -128,10 +128,7 @@ public class QuizHandler : MonoBehaviour
         if (pendingQuestions.Count > 0)
         {
             SetupNextQuestion();
-            SetButtonsInteractable(true);
-            yield break;
         }
-            
         else
         {
             ResetQuiz();
@@ -150,13 +147,38 @@ public class QuizHandler : MonoBehaviour
 
         question.text = newQ.question;
 
+        string[] answers = ShuffleAnswers(currentQuestion.answers);
+
         for (int i = 0; i < answerContainer.childCount; i++)
         {
-            answerContainer.GetChild(i).GetComponent<QuizAnswerBtn>().SetText(newQ.answers[i]);
+            answerContainer.GetChild(i).GetComponent<QuizAnswerBtn>().SetText(answers[i]);
         }
     }
 
-    void ResetQuiz()
+    string[] ShuffleAnswers(string[] answers)
+    {
+        int n = answers.Length;
+
+        string[] result = new string[n];
+
+        for (int i = 0; i < n; i++)
+        {
+            result[i] = answers[i];
+        }
+
+        while(n > 1)
+        {
+            n--;
+            int k = Random.Range(0, n + 1);
+            string value = result[k];
+            result[k] = result[n];
+            result[n] = value;
+        }
+
+        return result;
+    }
+
+    public void ResetQuiz()
     {
         maxQCount = 0;
         currentQuestion = null;

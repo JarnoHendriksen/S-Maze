@@ -41,7 +41,15 @@ public class DataCollector : MonoBehaviour
     public void LogQuizAttempts(string question)
     {
         if (!isLoggingEnabled) return;
-        attemptsPerQ.Add(question, attempts);
+        if (attemptsPerQ.ContainsKey(question))
+        {
+            attemptsPerQ[question] += attempts;
+        }
+        else
+        {
+            attemptsPerQ.Add(question, attempts);
+        }
+            
         attempts = 0;
     }
 

@@ -149,6 +149,7 @@ public class GameManager : MonoBehaviour
         UIHandler.instance.ShowScreen();
 
         LevelCompleted = false;
+        puzzlesCompleted = 0;
 
         yield return null;
     }
